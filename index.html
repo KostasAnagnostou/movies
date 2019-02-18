@@ -76,7 +76,7 @@
             <span class="fa fa-star fa-2x"></span>
             <span class="fa fa-star fa-2x"></span>
             <span class="fa fa-star fa-2x"></span>
-            <h4 class="rating">RATING</h4>            
+            <h4 class="rating">RATING</h4>
             <h4 class="genre">GENRE</h4>
             <p class="description">DESCRIPTION</p>
             <h4 class="year">YEAR</h4>
@@ -115,6 +115,8 @@
 
         // Strings Constants
         const NEWEST = "Newest Movies";
+        const TOP_RATED = "Top Rated";
+        const POPULAR = "Popular";
         const RELEASE = "Release Year: ";
         const CATEGORY = "Genre: ";
         const RATING_STRING = "IMDB Rating: "
@@ -132,39 +134,36 @@
         const main = document.querySelector("main");
         const template = document.querySelector("#movie").content;
 
-       // Create the Loading Indicator 
-        let createImage = document.createElement("img");
-        createImage.setAttribute("id", "loading");
-        createImage.src = LOADING_IMAGE;
-        main.appendChild(createImage);
-        // Get a reference to the loading indidator
-        const loadingIndicator = document.getElementById("loading");
+        // The menu & the mobile menu
+        const menu = document.getElementById("menu");
+        const mobileMenu = document.getElementById("menu-mobile");
 
+        // Create the Loading Indicator 
+        let loadingIndicator = "";
+        createLoadingIndicator();
 
+        // main title of the page
+        let mainTitle = "";
         // Create a Section and a title
         let section = document.createElement("section");
-        let newestTitle = document.createElement("h2");  
-        newestTitle.setAttribute("id", "newest-title");
-        // set the Main Title on the Home Page = Newest Movies
-        newestTitle.textContent = NEWEST;
-        main.appendChild(newestTitle);    
-        // Get a Reference to the main title (Newest Title)
-        const mainTitle = document.querySelector("#newest-title");
-        
-        // display the loading image
-        setLoadingHideTitles();
+
+        // Create the menu
+        createMenu();
 
         // call the fetchAllMovies function
-        fetchAllMovies(GOOGLE_SHEET);        
+        fetchAllMovies(GOOGLE_SHEET, sortByNewest);
 
         // function to fetch the movies list 
         // from Google Sheets
-        function fetchAllMovies(moviesList) {
+        function fetchAllMovies(moviesList, sortOrder) {
+            // display the loading image
+            setLoadingHideTitles();
+
             fetch(moviesList).then(e => e.json()).then(function (movies) {
                 let moviesJSON = movies.feed.entry;
 
                 // Sort the Movies by the newest year
-                sortByNewest(moviesJSON);
+                sortOrder(moviesJSON);
 
                 // For each movie in the array add these animation classes
                 // when you hover and when your mouse is leaving the card
@@ -223,21 +222,80 @@
                 calculateRating(rating, clone.querySelectorAll("span"));
             }
 
-            clone.querySelector(".genre").textContent = CATEGORY + genre;
-            // let only 3 columns on the description (substring() function)
-            clone.querySelector(".description").textContent = description.substring(0, 102) + "...";
-            clone.querySelector(".card-img").src = thumbnail;
-            clone.querySelector(".year").textContent = RELEASE + year;
+            // if genre is not empty or null, display it
+            if (genre) {
+                clone.querySelector(".genre").textContent = CATEGORY + genre;
+            }
+
+            // if description is not empty or null, display it
+            if (description) {
+                // let only 3 columns on the description (substring() function)
+                clone.querySelector(".description").textContent = description.substring(0, 102) + "...";
+            }
+
+            // if imdb video id is not empty or null, display the thumbnail
+            if (imdb_url) {
+                clone.querySelector(".card-img").src = thumbnail;
+            }
+
+            // if year is not empty or null, display it
+            if (year) {
+                clone.querySelector(".year").textContent = RELEASE + year;
+            }
 
             // append each movie to the section
             // and the section inside the main
             section.appendChild(clone);
             main.appendChild(section);
-
         }
 
-        // sort order by Newest Movie 
+        // function to create the Menu
+        function createMenu() {
+            // create the newest menu item
+            let menuItem = document.createElement("li");
+            menuItem.innerHTML = `<a href="#newest">${NEWEST}</a>`;
+            menuItem.addEventListener("click", function () {
+                clearBody();
+                createLoadingIndicator();
+                fetchAllMovies(GOOGLE_SHEET, sortByNewest);
+            });
+            menu.appendChild(menuItem); // append the menu item inside the menu               
+            mobileMenu.appendChild(menuItem.cloneNode(true)); // append the menu item inside the mobile menu   
+
+            // create the top rated menu item
+            let menuItem1 = document.createElement("li");
+            menuItem1.innerHTML = `<a href="#top-rated">${TOP_RATED}</a>`;
+            menuItem1.addEventListener("click", function () {
+                clearBody();
+                createLoadingIndicator();
+                fetchAllMovies(GOOGLE_SHEET, sortByTopRated);
+            });
+            menu.appendChild(menuItem1); // append the menu item inside the menu               
+            mobileMenu.appendChild(menuItem1.cloneNode(true)); // append the menu item inside the mobile menu   
+
+            // create the Popular Menu Item
+            let menuItem2 = document.createElement("li");
+            menuItem2.innerHTML = `<a href="#popular">${POPULAR}</a>`;
+            menuItem2.addEventListener("click", function () {
+                clearBody();
+                createLoadingIndicator();
+                fetchAllMovies(GOOGLE_SHEET, sortByPopular);
+            });
+            menu.appendChild(menuItem2); // append the menu item inside the menu               
+            mobileMenu.appendChild(menuItem2.cloneNode(true)); // append the menu item inside the mobile menu
+        }
+
+        // sort order by Newest Movies to oldest
         function sortByNewest(movies) {
+            // Create a Section and a title           
+            let newestTitle = document.createElement("h2");
+            newestTitle.setAttribute("id", "newest-title");
+            // set the Main Title on the Home Page = Newest Movies
+            newestTitle.textContent = NEWEST;
+            main.appendChild(newestTitle);
+            // Get a Reference to the main title (Newest Title)
+            mainTitle = document.querySelector("#newest-title");
+
             movies.sort(function (a, b) {
                 for (let i = 0; i < movies.length; i++) {
                     return b.gsx$releaseyear.$t - a.gsx$releaseyear.$t;
@@ -248,14 +306,55 @@
             movies.forEach(populateUI);
         }
 
-        // utility function to display the loading image 
-        function setLoadingHideTitles() {
-            loadingIndicator.style.display = "block";
-            mainTitle.style.display = "none";
+        // sort order by Top Rated Movies
+        function sortByTopRated(movies) {
+
+            let topRatedTitle = document.createElement("h2");
+            topRatedTitle.setAttribute("id", "top-rated");
+            // set the Main Title on the Home Page = Top Rated Movies
+            topRatedTitle.textContent = TOP_RATED;
+            main.appendChild(topRatedTitle);
+            // Get a Reference to the main title (Top Rated)
+            mainTitle = document.querySelector("#top-rated");
+
+            movies.sort(function (a, b) {
+                for (let i = 0; i < movies.length; i++) {
+                    return b.gsx$imdbrating.$t - a.gsx$imdbrating.$t;
+                }
+            });
+
+            // for each movie populate the UI
+            movies.forEach(populateUI);
         }
 
-         // utility function to hide the loading image 
-          // Function to Hide Loading Indicator / Show titles
+        // sort order by Most Popular Movies
+        function sortByPopular(movies) {
+
+            let popularTitle = document.createElement("h2");
+            popularTitle.setAttribute("id", "popular-title");
+            // set the Main Title on the Home Page = Newest Movies
+            popularTitle.textContent = POPULAR;
+            main.appendChild(popularTitle);
+            // Get a Reference to the main title (Newest Title)
+            mainTitle = document.querySelector("#popular-title");
+
+            movies.sort(function (a, b) {
+                for (let i = 0; i < movies.length; i++) {
+                    return b.gsx$votes.$t - a.gsx$votes.$t;
+                }
+            });
+
+            // for each movie populate the UI
+            movies.forEach(populateUI);
+        }
+
+        // utility function to display the loading image 
+        function setLoadingHideTitles() {
+            loadingIndicator.style.display = "block";            
+        }
+
+        // utility function to hide the loading image 
+        // Function to Hide Loading Indicator / Show titles
         function hideLoadingSetTitles() {
             // Hide the Loading Indicator
             loadingIndicator.style.display = "none";
@@ -264,50 +363,67 @@
 
         // calculate the rating and set the stars
         function calculateRating(rate, span) {
-              if (rate <= 3) {
-                  span[0].classList.add("checked");
-                  span[1].classList.remove("fa-star");
-                  span[1].classList.add("fa-star-half", "checked");                      
-              }               
-              if (rate > 3 && rate < 5) {
-                  span[0].classList.add("checked");  
-                  span[1].classList.add("checked"); 
-                  span[2].classList.remove("fa-star"); 
-                  span[2].classList.add("fa-star-half", "checked");            
-              } 
-              if (rate > 5.5 && rate <= 6.5) {
-                  span[0].classList.add("checked");  
-                  span[1].classList.add("checked");  
-                  span[2].classList.add("checked");                  
-              }
-              if (rate > 6.5 && rate <= 7.5) {
-                  span[0].classList.add("checked");  
-                  span[1].classList.add("checked");  
-                  span[2].classList.add("checked");
-                  span[3].classList.remove("fa-star"); 
-                  span[3].classList.add("fa-star-half", "checked");       
-              }  
-              if (rate > 7.5 && rate <= 8.5) {
-                  span[0].classList.add("checked");  
-                  span[1].classList.add("checked");  
-                  span[2].classList.add("checked");
-                  span[3].classList.add("checked");        
-              } 
-              if (rate > 8.5 && rate <= 9.5) {
-                  span[0].classList.add("checked");  
-                  span[1].classList.add("checked");  
-                  span[2].classList.add("checked");
-                  span[3].classList.add("checked");
-                  span[4].classList.remove("fa-star");  
-                  span[4].classList.add("fa-star-half", "checked");
-              }
-              if (rate > 9.5) {
-                  span[0].classList.add("checked");  
-                  span[1].classList.add("checked");  
-                  span[2].classList.add("checked");
-                  span[3].classList.add("checked");
-                  span[4].classList.add("checked");
-              }                     
+            if (rate <= 3) {
+                span[0].classList.add("checked");
+                span[1].classList.remove("fa-star");
+                span[1].classList.add("fa-star-half", "checked");
+            }
+            if (rate > 3 && rate < 5) {
+                span[0].classList.add("checked");
+                span[1].classList.add("checked");
+                span[2].classList.remove("fa-star");
+                span[2].classList.add("fa-star-half", "checked");
+            }
+            if (rate > 5.5 && rate <= 6.5) {
+                span[0].classList.add("checked");
+                span[1].classList.add("checked");
+                span[2].classList.add("checked");
+            }
+            if (rate > 6.5 && rate <= 7.5) {
+                span[0].classList.add("checked");
+                span[1].classList.add("checked");
+                span[2].classList.add("checked");
+                span[3].classList.remove("fa-star");
+                span[3].classList.add("fa-star-half", "checked");
+            }
+            if (rate > 7.5 && rate <= 8.5) {
+                span[0].classList.add("checked");
+                span[1].classList.add("checked");
+                span[2].classList.add("checked");
+                span[3].classList.add("checked");
+            }
+            if (rate > 8.5 && rate <= 9.5) {
+                span[0].classList.add("checked");
+                span[1].classList.add("checked");
+                span[2].classList.add("checked");
+                span[3].classList.add("checked");
+                span[4].classList.remove("fa-star");
+                span[4].classList.add("fa-star-half", "checked");
+            }
+            if (rate > 9.5) {
+                span[0].classList.add("checked");
+                span[1].classList.add("checked");
+                span[2].classList.add("checked");
+                span[3].classList.add("checked");
+                span[4].classList.add("checked");
+            }
+        }
+
+        // function to clear the body and the section
+        // before new fetch
+        function clearBody() {
+            main.innerHTML = "";
+            section.innerHTML = "";
+        }
+
+        function createLoadingIndicator() {
+             // Create the Loading Indicator 
+            let createImage = document.createElement("img");
+            createImage.setAttribute("id", "loading");
+            createImage.src = LOADING_IMAGE;
+            main.appendChild(createImage);
+            // Get a reference to the loading indidator
+            loadingIndicator = document.getElementById("loading");
         }
 
     </script>
