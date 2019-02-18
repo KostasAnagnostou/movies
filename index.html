@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- The Head of the Home Page with Meta Tags & Title -->
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movies Dynamic Web Site</title>
+    <meta name="description" content="This is a Dynamic Web Page for Movies. 
+    We are fetching the data from Google Sheets as json">
+    <meta name="title" content="This is a Dynamic Web Page for Movies.">
+    <link href="css/movies.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="imags/movies.png" sizes="32x32">
+    <!-- Montserrat Google Web Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
+</head>
+
+<!-- The body of the Home Page -->
+
+<body>
+    <!-- The Main Grid CSS Layout for the Home Page (home-grid) -->
+    <div id="home-grid">
+
+        <!-- The header area -->
+        <header id="header">
+
+            <!-- The Navigation Bar / Menu -->
+            <nav id="navbar" class="navbarbox">
+                <!-- Logo with a link to the Home Page -->
+                <a href="index.html"><img src="imags/petrograd-logo.png" id="logo" class="centered"
+                        alt="The logo of Movies Website"></a>
+                <div class="nav-wrapper">
+                    <!-- Navbar Links -->
+                    <ul id="menu">
+                        <!-- Here we insert the menu Dynamically via JavaScript -->
+                    </ul>
+                </div>
+            </nav>
+        </header>
+
+        <!-- Menu Icon -->
+        <div class="menuIcon">
+            <span class="icon icon-bars"></span>
+            <span class="icon icon-bars overlay"></span>
+        </div>
+
+        <!-- Overlay Menu -->
+        <div class="overlay-menu">
+            <ul id="menu-mobile">
+                <!-- Here we insert again the menu Dynamically via JavaScript -->
+            </ul>
+        </div>
+
+        <!-- The Main Content of the Home Page -->
+        <main id="main-grid">
+            <!-- We insert all the content Dynamically via JavaScript -->
+        </main>
+
+        <!-- The Footer of the Website -->
+        <footer id="footer">
+            <p class="copyright">&copy; 2019 Movies </p>
+        </footer>
+    </div>
+
+    <!-- The template for each Recipe  -->
+    <template id="movie">
+        <article>
+            <img class="card-img" src="IMG" style="width:100%">
+            <h1 class="title">MOVIE TITLE</h1>
+            <h3 class="rating">RATING</h3>
+            <h4 class="genre">GENRE</h4>
+            <p class="description">DESCRIPTION</p>            
+            <p><button class="modal-btn">Read More</button></p>
+        </article>
+    </template>
+
+    <!-- Modal content -->
+    <!-- <article class="modal myModal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h1 class="modal-title"></h1>
+            <img class="modal-image" src="" alt="">
+            <p class="modal-price"></p>
+            <p class="old-price"></p>
+            <p class="longDescription"></p>
+            <ul class="horizontal">
+                <li class="region"></li>
+                <li class="modal-category"></li>
+                <li class="allergens"></li>
+                <li class="vegetarian-modal"></li>
+                <li class="alcohol"></li>
+            </ul> -->
+            <!-- The loading Image here -->
+            <!-- <img src="imags/loading.gif" id="loading-modal" alt="loading">
+        </div>
+    </article>  -->
+
+    <!-- The JS for the menu -->
+    <!-- <script src="js/menu.js"></script> -->
+
+    <!-- Script to Fetch Data from the API and display them - by Konstantinos Anagnostou -->
+    <!-- <script src="js/fetchdata.js"></script> -->
+
+    <script>
+    
+    // The googleSheet link
+    const GOOGLE_SHEET = "https://spreadsheets.google.com/feeds/list/156eQXgwJy0VvrwW6GH61fKfENcL3g4gRxlPaeLciy5Y/od6/public/values?alt=json";
+
+    // The PATHS to construct the url for the youtube Images 
+    const BASE_IMG_YOUTUBE = "https://img.youtube.com/vi/";
+    const YOUTUBE_SMALL_JPG = "/mqdefault.jpg";
+    const YOUTUBE_BIG_JPG = "/maxresdefault.jpg"
+
+    // The main HTML Element and the template 
+    const main = document.querySelector("main");
+    const template = document.querySelector("#movie").content; 
+    let section = document.createElement("section");   
+
+    // call the fetchAllMovies function
+    fetchAllMovies(GOOGLE_SHEET);
+        
+    // function to fetch the movies list 
+    // from Google Sheets
+    function fetchAllMovies(moviesList) {
+        fetch(moviesList).then(e => e.json()).then(movies=>movies.feed.entry.forEach(populateUI));
+    }
+ 
+    // Function to set the UI for each movie
+    function populateUI(movie) {
+    
+        // Store the data for the movie
+        let id = movie.gsx$id.$t;
+        let title = movie.gsx$title.$t;      
+        let rating = movie.gsx$imdbrating.$t;
+        let description = movie.gsx$description.$t;       
+        let imdb_url = movie.gsx$imdburl.$t;
+        let genre = movie.gsx$genres.$t;
+        let actors = movie.gsx$actors.$t;
+        let duration = movie.gsx$duration.$t;
+        let year = movie.gsx$releaseyear.$t;
+        let youtube_id = movie.gsx$youtubeid.$t;
+        let thumbnail = BASE_IMG_YOUTUBE + youtube_id + YOUTUBE_SMALL_JPG;
+
+        // clone the template and display the values
+        const clone = template.cloneNode(true);
+        clone.querySelector(".title").textContent = title;
+        clone.querySelector(".rating").textContent = rating;        
+        clone.querySelector(".genre").textContent = genre; 
+        clone.querySelector(".description").textContent = description; 
+        clone.querySelector(".card-img").src = thumbnail; 
+
+       // for Each genre create a section
+        // for (let i = 0; i <= genre.length; i++) {
+        //     let section = document.createElement("section");
+        //     section.setAttribute("id", genre[i]);
+        //     main.appendChild(section.cloneNode(true));
+        // }        
+        section.appendChild(clone);
+        main.appendChild(section);
+    }    
+    
+    </script>
+
+</body>
+
+</html>

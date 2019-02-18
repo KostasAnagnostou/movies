@@ -1,0 +1,674 @@
+:root {
+    --main-color: #9C27B0;
+    --main-text-color: #222222;
+    --color-white:#fff;
+}
+
+html,
+body {
+	margin: 0px;
+	padding: 0px;
+	background-color: var(--color-white);
+	height: 100%;
+	font-family: 'Montserrat', sans-serif;
+	scroll-behavior: smooth;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+h2 {
+	text-align:center;
+	padding:12px;
+	color:var(--color-white);
+	background-color:var(--main-color);
+}
+/* This is the Main Grid CSS of the Home Page */
+
+#home-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(100%, 1fr));
+}
+
+/* The CSS Grid for Main Content - Home Page*/
+#main-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(100%, 1fr));
+}
+/* #title {
+	grid-area: title-area;
+	padding-top: 50px;
+	text-align: center;
+	margin-bottom:0px;
+} */
+
+/* We use the repeat() function & auto-fill keyword for the Responsiveness 
+   Nice resource here ----> https://css-tricks.com/auto-sizing-columns-css-grid-auto-fill-vs-auto-fit/
+*/
+section {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+	grid-gap: 10px;
+}
+
+/* Style for the Hamburger & the Navigation Bar */
+/*============ Navbar ============*/
+
+#navbar {
+	position: fixed;
+	top: 0;
+	height: 50px;
+	line-height: 1px;
+	width: 100vw;
+	z-index: 10;
+	font-weight: bold;
+	background-color: var(--main-color);
+}
+
+.nav-wrapper {
+	text-align: right;
+	width: 100%;
+	position: fixed;
+	float: right;
+	z-index: -1;
+}
+
+#navbar ul {
+	padding-top: 10px;
+	padding-right: 50px;
+	display: inline-block;
+	list-style: none;
+	text-align: center;
+	transition: transform 0.5s ease-out;
+}
+
+@media(max-width: 1000px) {
+	#navbar ul {
+		display: none;
+	}
+}
+
+#navbar li {
+	display: inline-block;
+}
+
+#navbar li a {
+	color: var(--color-white);
+	display: block;
+	font-size: 12px;
+	letter-spacing: 1px;
+	margin: 0 10px;
+	padding: 0 4px;
+	position: relative;
+	text-decoration: none;
+	text-transform: uppercase;
+	transition: all 0.5s ease;
+}
+
+#navbar li a:hover {
+	color: #E0E0E0;
+	transition: all 1s ease;
+}
+
+
+/* Animated Bottom Line */
+
+#navbar li a:before,
+#navbar li a:after {
+	content: '';
+	position: absolute;
+	width: 0%;
+	height: 1px;
+	bottom: -12px;
+	background: var(--color-white);
+}
+
+#navbar li a:before {
+	left: 0;
+	transition: 0.5s;
+}
+
+#navbar li a:after {
+	background: var(--color-white);
+	right: 0;
+}
+
+#navbar li a:hover:before {
+	background: var(--color-white);
+	width: 100%;
+	transition: width 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+#navbar li a:hover:after {
+	background: transparent;
+	width: 100%;
+}
+
+
+/*======= Responsive Mobile Menu========*/
+
+.overlay-menu {
+	background: rgba(255, 87, 34, 0.98);
+	color: var(--color-white);
+	justify-content: center;
+	position: fixed;
+	top: 0;
+	padding-left: 40%;
+	padding-top: 30%;
+	transform: translateX(-100%);
+	width: 100%;
+	height: 100%;
+	transition: transform 0.2s ease-out;
+	z-index: 3;
+}
+
+.overlay-menu ul,
+.overlay-menu li {
+	display: block;
+	position: relative;
+	width: auto;
+}
+
+.overlay-menu li a {
+	display: block;
+	font-size: 18px;
+	padding: 10px 0;
+	text-align: left;
+	text-transform: uppercase;
+	transition: color 0.3s ease;
+	text-decoration: none;
+	color: var(--color-white);
+}
+
+
+/* Animated Bottom Line */
+
+.overlay-menu li a:before,
+.overlay-menu li a:after {
+	content: '';
+	position: absolute;
+	width: 0%;
+	height: 1px;
+	bottom: -1px;
+	background: var(--main-color);
+}
+
+.overlay-menu li a:before {
+	left: 0;
+	transition: 0.5s;
+}
+
+.overlay-menu li a:after {
+	background: var(--color-white);
+	right: 0;
+	/* transition: width 0.8s cubic-bezier(0.22, 0.61, 0.36, 1); */
+}
+
+.overlay-menu li a:hover:before {
+	background: var(--color-white);
+	width: 70%;
+	transition: width 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.overlay-menu li a:hover:after {
+	background: transparent;
+	width: 100%;
+	/* transition: 0s; */
+}
+
+
+/* The style for the Logo */
+
+#logo {
+	padding-left: 120px;
+	height: 50px;
+	float: left;
+}
+
+
+/* The Style for  the Card */
+
+.card {
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+	max-width: 300px;
+	margin: auto;
+	text-align: center;
+	font-family: arial;
+}
+
+.card-img {
+	width: 100%;
+	height: 200px;
+}
+
+.card:hover {
+	box-shadow: 0 8px 24px 0 rgba(0, 0, 0, 0.2);
+}
+
+.price {
+	color: grey;
+	font-size: 18px;
+}
+
+.card button {
+	border: none;
+	outline: 0;
+	padding: 12px;
+	color: var(--color-white);
+	background-color: var(--main-color);
+	text-align: center;
+	cursor: pointer;
+	width: 100%;
+	font-size: 18px;
+}
+
+.card button:hover {
+	opacity: 0.7;
+}
+
+.category {
+	color: var(--main-color);
+	font-weight: bold;
+}
+
+
+/* the modal */
+
+
+/* The Modal (background) */
+
+.modal {
+	display: none;
+	position: fixed;
+	z-index: 1;
+	padding-top: 100px;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	background-color: rgb(0, 0, 0);
+	/* Fallback color */
+	background-color: rgba(0, 0, 0, 0.4);
+	/* Black w/ opacity */
+}
+
+
+/* Modal Content */
+
+.modal-content {
+	background-color: var(--color-white);
+	margin: auto;
+	padding: 20px;
+	border: 1px solid #888;
+	width: 80%;
+}
+
+.modal-title {
+	text-align: center;
+}
+
+.modal-image {
+	display: block;
+	margin-right: auto;
+	margin-left: auto;
+	width: 100%;
+	max-width: 800px;
+}
+
+
+/* The Recipe's Details */
+
+.recipeName {
+	font-size: 18px;
+	padding-left: 8px;
+	padding-right: 8px;
+}
+
+.shortDescription {
+	padding-left: 8px;
+	padding-right: 8px;
+}
+
+.modal-price {
+	text-align: center;
+	color: var(--main-color);
+  font-size: 18px;
+  font-weight:bold;
+}
+
+
+.longDescription {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	max-width: 800px;
+	word-break: keep-all;
+}
+
+ul.horizontal {
+	list-style-type: none;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	max-width: 800px;
+} @media (max-width:900px) {
+  ul.horizontal {
+    padding:0px;
+  }
+}
+
+ul.horizontal li {
+	display: inline;
+	padding-right: 18px;
+	color: var(--main-color);
+  font-weight: bold;
+  text-align:center;
+} @media (max-width:900px) {
+  ul.horizontal li {
+    display:block;    
+    color: var(--main-color);
+    font-weight: bold;    
+  }
+}
+
+/* The Close Button */
+
+.close {
+	color: #aaaaaa;
+	float: right;
+	font-size: 28px;
+	font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+	color: #000;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+
+/* The Copyright & the loading indicator */
+
+.copyright {
+	text-align: center;
+}
+
+#loading,
+#loading-modal {
+	display: none;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+
+/* animation from Animatate CSS Library 
+       * ---> https://github.com/daneden/animate.css
+       */
+
+@-webkit-keyframes pulse {
+	from {
+		-webkit-transform: scale3d(1, 1, 1);
+		transform: scale3d(1, 1, 1);
+	}
+	100% {
+		-webkit-transform: scale3d(1.05, 1.05, 1.05);
+		transform: scale3d(1.05, 1.05, 1.05);
+	}
+}
+
+@keyframes pulse {
+	from {
+		-webkit-transform: scale3d(1, 1, 1);
+		transform: scale3d(1, 1, 1);
+	}
+	100% {
+		-webkit-transform: scale3d(1.05, 1.05, 1.05);
+		transform: scale3d(1.05, 1.05, 1.05);
+	}
+}
+
+@-webkit-keyframes pulse-out {
+	from {
+		-webkit-transform: scale3d(1.05, 1.05, 1.05);
+		transform: scale3d(1.05, 1.05, 1.05);
+	}
+	to {
+		-webkit-transform: scale3d(1, 1, 1);
+		transform: scale3d(1, 1, 1);
+	}
+}
+
+@keyframes pulse-out {
+	from {
+		-webkit-transform: scale3d(1.05, 1.05, 1.05);
+		transform: scale3d(1.05, 1.05, 1.05);
+	}
+	to {
+		-webkit-transform: scale3d(1, 1, 1);
+		transform: scale3d(1, 1, 1);
+	}
+}
+
+.pulse-out {
+	-webkit-animation-name: pulse-out;
+	animation-name: pulse-out;
+}
+
+.pulse {
+	-webkit-animation-name: pulse;
+	animation-name: pulse;
+}
+
+.animated {
+	-webkit-animation-duration: 1s;
+	animation-duration: 1s;
+	-webkit-animation-fill-mode: both;
+	animation-fill-mode: both;
+}
+
+.animated.infinite {
+	-webkit-animation-iteration-count: infinite;
+	animation-iteration-count: infinite;
+}
+
+.animated.delay-1s {
+	-webkit-animation-delay: 1s;
+	animation-delay: 1s;
+}
+
+.animated.delay-2s {
+	-webkit-animation-delay: 2s;
+	animation-delay: 2s;
+}
+
+.animated.delay-3s {
+	-webkit-animation-delay: 3s;
+	animation-delay: 3s;
+}
+
+.animated.delay-4s {
+	-webkit-animation-delay: 4s;
+	animation-delay: 4s;
+}
+
+.animated.delay-5s {
+	-webkit-animation-delay: 5s;
+	animation-delay: 5s;
+}
+
+.animated.fast {
+	-webkit-animation-duration: 800ms;
+	animation-duration: 800ms;
+}
+
+.animated.faster {
+	-webkit-animation-duration: 500ms;
+	animation-duration: 500ms;
+}
+
+.animated.slow {
+	-webkit-animation-duration: 2s;
+	animation-duration: 2s;
+}
+
+.animated.slower {
+	-webkit-animation-duration: 3s;
+	animation-duration: 3s;
+}
+
+@media (prefers-reduced-motion) {
+	.animated {
+		-webkit-animation: unset !important;
+		animation: unset !important;
+		-webkit-transition: none !important;
+		transition: none !important;
+	}
+}
+
+
+/* Media Queries for Responsive Web Design */
+
+
+/* SmartPhones | Screens 320px - 480px */
+
+@media only screen and (min-width: 320px) and (max-width: 1000px) {
+	/* The style for the Logo */
+	#logo {
+		height: 50px;
+		float: none;
+		display: block;
+		margin-left: auto;
+		margin-right: auto;
+		padding-left: 0;
+	}
+	.menuIcon {
+		cursor: pointer;
+		display: block;
+		position: absolute;
+		right: 15px;
+		top: 20px;
+		height: 23px;
+		width: 27px;
+		z-index: 12;
+	}
+	/* Icon Bars */
+	.icon-bars {
+		background: var(--color-white);
+		position: absolute;
+		left: 1px;
+		top: 45%;
+		height: 2px;
+		width: 20px;
+		transition: 0.4s;
+	}
+	.icon-bars::before {
+		background: var(--color-white);
+		content: '';
+		position: absolute;
+		left: 0;
+		top: -8px;
+		height: 2px;
+		width: 20px;
+		transition: 0.3s width 0.4s;
+	}
+	.icon-bars::after {
+		margin-top: 0px;
+		background: var(--color-white);
+		content: '';
+		position: absolute;
+		left: 0;
+		bottom: -8px;
+		height: 2px;
+		width: 20px;
+		transition: 0.3s width 0.4s;
+	}
+	/* Bars Shadows */
+	.icon-bars.overlay {
+		background: var(--color-white);
+		width: 20px;
+		animation: middleBar 3s infinite 0.5s;
+	}
+	@keyframes middleBar {
+		0% {
+			width: 0px
+		}
+		50% {
+			width: 20px
+		}
+		100% {
+			width: 0px
+		}
+	}
+	.icon-bars.overlay::before {
+		background: var(--color-white);
+		width: 10px;
+		animation: topBar 3s infinite 0.2s;
+	}
+	@keyframes topBar {
+		0% {
+			width: 0px
+		}
+		50% {
+			width: 10px
+		}
+		100% {
+			width: 0px
+		}
+	}
+	.icon-bars.overlay::after {
+		background: var(--color-white);
+		width: 15px;
+		animation: bottomBar 3s infinite 1s;
+	}
+	@keyframes bottomBar {
+		0% {
+			width: 0px
+		}
+		50% {
+			width: 15px
+		}
+		100% {
+			width: 0px
+		}
+	}
+	/* Toggle Menu Icon */
+	.menuIcon {
+		position: fixed;
+	}
+	.menuIcon.toggle .icon-bars {
+		top: 5px;
+		transform: translate3d(0, 5px, 0) rotate(135deg);
+		transition-delay: 0.1s;
+		transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+	}
+	.menuIcon.toggle .icon-bars::before {
+		top: 0;
+		transition-delay: 0.1s;
+		opacity: 0;
+	}
+	.menuIcon.toggle .icon-bars::after {
+		top: 10px;
+		transform: translate3d(0, -10px, 0) rotate(-270deg);
+		transition-delay: 0.1s;
+		transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+	}
+	.menuIcon.toggle .icon-bars.overlay {
+		width: 20px;
+		opacity: 0;
+		transition: all 0s ease 0s;
+	}
+
+	/* Modal Content */
+
+.modal-content {
+	background-color: var(--color-white);
+	margin: auto;
+	padding: 20px;
+	border: 1px solid #888;
+	width: 90%;
+}
+	
+}
