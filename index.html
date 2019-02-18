@@ -18,7 +18,6 @@
 </head>
 
 <!-- The body of the Home Page -->
-
 <body>
     <!-- The Main Grid CSS Layout for the Home Page (home-grid) -->
     <div id="home-grid">
@@ -29,7 +28,7 @@
             <!-- The Navigation Bar / Menu -->
             <nav id="navbar" class="navbarbox">
                 <!-- Logo with a link to the Home Page -->
-                <a href="index.html"><img src="imags/petrograd-logo.png" id="logo" class="centered"
+                <a href="index.html"><img src="images/keaflix-logo.png" id="logo" class="centered"
                         alt="The logo of Movies Website"></a>
                 <div class="nav-wrapper">
                     <!-- Navbar Links -->
@@ -66,7 +65,7 @@
 
     <!-- The template for each Recipe  -->
     <template id="movie">
-        <article>
+        <article class="card">
             <img class="card-img" src="IMG" style="width:100%">
             <h1 class="title">MOVIE TITLE</h1>
             <h3 class="rating">RATING</h3>
@@ -104,6 +103,10 @@
     <!-- <script src="js/fetchdata.js"></script> -->
 
     <script>
+
+    // Strings Constants
+    const NEWEST = "Newest Movies"; 
+
     
     // The googleSheet link
     const GOOGLE_SHEET = "https://spreadsheets.google.com/feeds/list/156eQXgwJy0VvrwW6GH61fKfENcL3g4gRxlPaeLciy5Y/od6/public/values?alt=json";
@@ -116,16 +119,44 @@
     // The main HTML Element and the template 
     const main = document.querySelector("main");
     const template = document.querySelector("#movie").content; 
+
+    // Create a Section and a title
     let section = document.createElement("section");   
+    let newestTitle = document.createElement("h2");   
 
     // call the fetchAllMovies function
     fetchAllMovies(GOOGLE_SHEET);
+
+    // set the Main Title on the Home Page = Newest Movies
+    newestTitle.textContent = NEWEST; 
+    main.appendChild(newestTitle);   
         
     // function to fetch the movies list 
     // from Google Sheets
     function fetchAllMovies(moviesList) {
-        fetch(moviesList).then(e => e.json()).then(movies=>movies.feed.entry.forEach(populateUI));
-    }
+        fetch(moviesList).then(e => e.json()).then(function(movies) {
+        let moviesJSON = movies.feed.entry;
+
+        // Sort the Movies by the newest year
+        sortByNewest(moviesJSON);
+        
+        // For each movie in the array add these animation classes
+        // when you hover and when your mouse is leaving the card
+        for (let j = 0; j < moviesJSON.length; j++) {
+            let currentMovie = document.getElementsByClassName("card")[j];
+
+            currentMovie.addEventListener("mouseenter", function () {
+                currentMovie.classList.remove("animated", "pulse-out");
+                currentMovie.classList.add("animated", "pulse");
+
+                currentMovie.addEventListener("mouseleave", function () {
+                    currentMovie.classList.remove("animated", "pulse");
+                    currentMovie.classList.add("animated", "pulse-out");
+                });
+            });
+        }
+    });
+   }    
  
     // Function to set the UI for each movie
     function populateUI(movie) {
@@ -151,15 +182,24 @@
         clone.querySelector(".description").textContent = description; 
         clone.querySelector(".card-img").src = thumbnail; 
 
-       // for Each genre create a section
-        // for (let i = 0; i <= genre.length; i++) {
-        //     let section = document.createElement("section");
-        //     section.setAttribute("id", genre[i]);
-        //     main.appendChild(section.cloneNode(true));
-        // }        
+         // append each movie to the section
+         // and the section inside the main
         section.appendChild(clone);
         main.appendChild(section);
-    }    
+
+    }
+
+    // sort order by Newest Movie 
+    function sortByNewest(movies) {
+        movies.sort(function(a, b) {
+            for (let i = 0; i < sortByNewest.length; i++) {
+                return b.gsx$releaseyear.$t - a.gsx$releaseyear.$t;
+            }
+        });
+
+        // for each movie populate the UI
+        movies.forEach(populateUI);
+    }   
     
     </script>
 
