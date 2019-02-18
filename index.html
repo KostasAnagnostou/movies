@@ -2,6 +2,7 @@
 <html lang="en">
 
 <!-- The Head of the Home Page with Meta Tags & Title -->
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,9 +16,11 @@
     <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
 <!-- The body of the Home Page -->
+
 <body>
     <!-- The Main Grid CSS Layout for the Home Page (home-grid) -->
     <div id="home-grid">
@@ -68,9 +71,15 @@
         <article class="card">
             <img class="card-img" src="IMG" style="width:100%">
             <h1 class="title">MOVIE TITLE</h1>
-            <h3 class="rating">RATING</h3>
+            <span class="fa fa-star fa-2x"></span>
+            <span class="fa fa-star fa-2x"></span>
+            <span class="fa fa-star fa-2x"></span>
+            <span class="fa fa-star fa-2x"></span>
+            <span class="fa fa-star fa-2x"></span>
+            <h4 class="rating">RATING</h4>            
             <h4 class="genre">GENRE</h4>
-            <p class="description">DESCRIPTION</p>            
+            <p class="description">DESCRIPTION</p>
+            <h4 class="year">YEAR</h4>
             <p><button class="modal-btn">Read More</button></p>
         </article>
     </template>
@@ -91,8 +100,8 @@
                 <li class="vegetarian-modal"></li>
                 <li class="alcohol"></li>
             </ul> -->
-            <!-- The loading Image here -->
-            <!-- <img src="imags/loading.gif" id="loading-modal" alt="loading">
+    <!-- The loading Image here -->
+    <!-- <img src="imags/loading.gif" id="loading-modal" alt="loading">
         </div>
     </article>  -->
 
@@ -104,103 +113,203 @@
 
     <script>
 
-    // Strings Constants
-    const NEWEST = "Newest Movies"; 
+        // Strings Constants
+        const NEWEST = "Newest Movies";
+        const RELEASE = "Release Year: ";
+        const CATEGORY = "Genre: ";
+        const RATING_STRING = "IMDB Rating: "
+        const LOADING_IMAGE = "images/loading.gif";
 
-    
-    // The googleSheet link
-    const GOOGLE_SHEET = "https://spreadsheets.google.com/feeds/list/156eQXgwJy0VvrwW6GH61fKfENcL3g4gRxlPaeLciy5Y/od6/public/values?alt=json";
+        // The googleSheet link
+        const GOOGLE_SHEET = "https://spreadsheets.google.com/feeds/list/156eQXgwJy0VvrwW6GH61fKfENcL3g4gRxlPaeLciy5Y/od6/public/values?alt=json";
 
-    // The PATHS to construct the url for the youtube Images 
-    const BASE_IMG_YOUTUBE = "https://img.youtube.com/vi/";
-    const YOUTUBE_SMALL_JPG = "/mqdefault.jpg";
-    const YOUTUBE_BIG_JPG = "/maxresdefault.jpg"
+        // The PATHS to construct the url for the youtube Images 
+        const BASE_IMG_YOUTUBE = "https://img.youtube.com/vi/";
+        const YOUTUBE_SMALL_JPG = "/mqdefault.jpg";
+        const YOUTUBE_BIG_JPG = "/maxresdefault.jpg";
 
-    // The main HTML Element and the template 
-    const main = document.querySelector("main");
-    const template = document.querySelector("#movie").content; 
+        // The main HTML Element and the template 
+        const main = document.querySelector("main");
+        const template = document.querySelector("#movie").content;
 
-    // Create a Section and a title
-    let section = document.createElement("section");   
-    let newestTitle = document.createElement("h2");   
+       // Create the Loading Indicator 
+        let createImage = document.createElement("img");
+        createImage.setAttribute("id", "loading");
+        createImage.src = LOADING_IMAGE;
+        main.appendChild(createImage);
+        // Get a reference to the loading indidator
+        const loadingIndicator = document.getElementById("loading");
 
-    // call the fetchAllMovies function
-    fetchAllMovies(GOOGLE_SHEET);
 
-    // set the Main Title on the Home Page = Newest Movies
-    newestTitle.textContent = NEWEST; 
-    main.appendChild(newestTitle);   
+        // Create a Section and a title
+        let section = document.createElement("section");
+        let newestTitle = document.createElement("h2");  
+        newestTitle.setAttribute("id", "newest-title");
+        // set the Main Title on the Home Page = Newest Movies
+        newestTitle.textContent = NEWEST;
+        main.appendChild(newestTitle);    
+        // Get a Reference to the main title (Newest Title)
+        const mainTitle = document.querySelector("#newest-title");
         
-    // function to fetch the movies list 
-    // from Google Sheets
-    function fetchAllMovies(moviesList) {
-        fetch(moviesList).then(e => e.json()).then(function(movies) {
-        let moviesJSON = movies.feed.entry;
+        // display the loading image
+        setLoadingHideTitles();
 
-        // Sort the Movies by the newest year
-        sortByNewest(moviesJSON);
-        
-        // For each movie in the array add these animation classes
-        // when you hover and when your mouse is leaving the card
-        for (let j = 0; j < moviesJSON.length; j++) {
-            let currentMovie = document.getElementsByClassName("card")[j];
+        // call the fetchAllMovies function
+        fetchAllMovies(GOOGLE_SHEET);        
 
-            currentMovie.addEventListener("mouseenter", function () {
-                currentMovie.classList.remove("animated", "pulse-out");
-                currentMovie.classList.add("animated", "pulse");
+        // function to fetch the movies list 
+        // from Google Sheets
+        function fetchAllMovies(moviesList) {
+            fetch(moviesList).then(e => e.json()).then(function (movies) {
+                let moviesJSON = movies.feed.entry;
 
-                currentMovie.addEventListener("mouseleave", function () {
-                    currentMovie.classList.remove("animated", "pulse");
-                    currentMovie.classList.add("animated", "pulse-out");
-                });
+                // Sort the Movies by the newest year
+                sortByNewest(moviesJSON);
+
+                // For each movie in the array add these animation classes
+                // when you hover and when your mouse is leaving the card
+                for (let j = 0; j < moviesJSON.length; j++) {
+                    let currentMovie = document.getElementsByClassName("card")[j];
+
+                    currentMovie.addEventListener("mouseenter", function () {
+                        currentMovie.classList.remove("animated", "pulse-out");
+                        currentMovie.classList.add("animated", "pulse");
+
+                        currentMovie.addEventListener("mouseleave", function () {
+                            currentMovie.classList.remove("animated", "pulse");
+                            currentMovie.classList.add("animated", "pulse-out");
+                        });
+                    });
+                }
             });
         }
-    });
-   }    
- 
-    // Function to set the UI for each movie
-    function populateUI(movie) {
-    
-        // Store the data for the movie
-        let id = movie.gsx$id.$t;
-        let title = movie.gsx$title.$t;      
-        let rating = movie.gsx$imdbrating.$t;
-        let description = movie.gsx$description.$t;       
-        let imdb_url = movie.gsx$imdburl.$t;
-        let genre = movie.gsx$genres.$t;
-        let actors = movie.gsx$actors.$t;
-        let duration = movie.gsx$duration.$t;
-        let year = movie.gsx$releaseyear.$t;
-        let youtube_id = movie.gsx$youtubeid.$t;
-        let thumbnail = BASE_IMG_YOUTUBE + youtube_id + YOUTUBE_SMALL_JPG;
 
-        // clone the template and display the values
-        const clone = template.cloneNode(true);
-        clone.querySelector(".title").textContent = title;
-        clone.querySelector(".rating").textContent = rating;        
-        clone.querySelector(".genre").textContent = genre; 
-        clone.querySelector(".description").textContent = description; 
-        clone.querySelector(".card-img").src = thumbnail; 
+        // Function to set the UI for each movie
+        function populateUI(movie) {
 
-         // append each movie to the section
-         // and the section inside the main
-        section.appendChild(clone);
-        main.appendChild(section);
+            // hide the loading image
+            hideLoadingSetTitles();
 
-    }
+            // Store the data for the movie
+            let id = movie.gsx$id.$t;
+            let title = movie.gsx$title.$t;
+            let rating = movie.gsx$imdbrating.$t;
+            let description = movie.gsx$description.$t;
+            let imdb_url = movie.gsx$imdburl.$t;
+            let genre = movie.gsx$genres.$t;
+            let actors = movie.gsx$actors.$t;
+            let duration = movie.gsx$duration.$t;
+            let year = movie.gsx$releaseyear.$t;
+            let youtube_id = movie.gsx$youtubeid.$t;
+            let thumbnail = BASE_IMG_YOUTUBE + youtube_id + YOUTUBE_SMALL_JPG;
 
-    // sort order by Newest Movie 
-    function sortByNewest(movies) {
-        movies.sort(function(a, b) {
-            for (let i = 0; i < movies.length; i++) {
-                return b.gsx$releaseyear.$t - a.gsx$releaseyear.$t;
+            // clone the template and display the values
+            const clone = template.cloneNode(true);
+
+            // If title is not empty or null, display it
+            if (title) {
+                // if the title is more than 31 characters, cut it
+                if (title.length > 31) {
+                    clone.querySelector(".title").textContent = title.substring(0, 28) + "...";
+                } else {// otherwise display all the title
+                    clone.querySelector(".title").textContent = title;
+                }
             }
-        });
 
-        // for each movie populate the UI
-        movies.forEach(populateUI);
-    }   
-    
+            // if rating is not empty or null, display it 
+            if (rating) {
+                clone.querySelector(".rating").textContent = RATING_STRING + rating;
+                // function to set the rating
+                calculateRating(rating, clone.querySelectorAll("span"));
+            }
+
+            clone.querySelector(".genre").textContent = CATEGORY + genre;
+            // let only 3 columns on the description (substring() function)
+            clone.querySelector(".description").textContent = description.substring(0, 102) + "...";
+            clone.querySelector(".card-img").src = thumbnail;
+            clone.querySelector(".year").textContent = RELEASE + year;
+
+            // append each movie to the section
+            // and the section inside the main
+            section.appendChild(clone);
+            main.appendChild(section);
+
+        }
+
+        // sort order by Newest Movie 
+        function sortByNewest(movies) {
+            movies.sort(function (a, b) {
+                for (let i = 0; i < movies.length; i++) {
+                    return b.gsx$releaseyear.$t - a.gsx$releaseyear.$t;
+                }
+            });
+
+            // for each movie populate the UI
+            movies.forEach(populateUI);
+        }
+
+        // utility function to display the loading image 
+        function setLoadingHideTitles() {
+            loadingIndicator.style.display = "block";
+            mainTitle.style.display = "none";
+        }
+
+         // utility function to hide the loading image 
+          // Function to Hide Loading Indicator / Show titles
+        function hideLoadingSetTitles() {
+            // Hide the Loading Indicator
+            loadingIndicator.style.display = "none";
+            mainTitle.style.display = "block";
+        }
+
+        // calculate the rating and set the stars
+        function calculateRating(rate, span) {
+              if (rate <= 3) {
+                  span[0].classList.add("checked");
+                  span[1].classList.remove("fa-star");
+                  span[1].classList.add("fa-star-half", "checked");                      
+              }               
+              if (rate > 3 && rate < 5) {
+                  span[0].classList.add("checked");  
+                  span[1].classList.add("checked"); 
+                  span[2].classList.remove("fa-star"); 
+                  span[2].classList.add("fa-star-half", "checked");            
+              } 
+              if (rate > 5.5 && rate <= 6.5) {
+                  span[0].classList.add("checked");  
+                  span[1].classList.add("checked");  
+                  span[2].classList.add("checked");                  
+              }
+              if (rate > 6.5 && rate <= 7.5) {
+                  span[0].classList.add("checked");  
+                  span[1].classList.add("checked");  
+                  span[2].classList.add("checked");
+                  span[3].classList.remove("fa-star"); 
+                  span[3].classList.add("fa-star-half", "checked");       
+              }  
+              if (rate > 7.5 && rate <= 8.5) {
+                  span[0].classList.add("checked");  
+                  span[1].classList.add("checked");  
+                  span[2].classList.add("checked");
+                  span[3].classList.add("checked");        
+              } 
+              if (rate > 8.5 && rate <= 9.5) {
+                  span[0].classList.add("checked");  
+                  span[1].classList.add("checked");  
+                  span[2].classList.add("checked");
+                  span[3].classList.add("checked");
+                  span[4].classList.remove("fa-star");  
+                  span[4].classList.add("fa-star-half", "checked");
+              }
+              if (rate > 9.5) {
+                  span[0].classList.add("checked");  
+                  span[1].classList.add("checked");  
+                  span[2].classList.add("checked");
+                  span[3].classList.add("checked");
+                  span[4].classList.add("checked");
+              }                     
+        }
+
     </script>
 
 </body>
