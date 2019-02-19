@@ -161,7 +161,7 @@ section {
 /*======= Responsive Mobile Menu========*/
 
 .overlay-menu {
-	background: rgba(255, 87, 34, 0.98);
+	background: rgba(156, 39, 176, 0.98);
 	color: var(--color-white);
 	justify-content: center;
 	position: fixed;
