@@ -11,7 +11,7 @@
     We are fetching the data from Google Sheets as json">
     <meta name="title" content="This is a Dynamic Web Page for Movies.">
     <link href="css/movies.css" rel="stylesheet">
-    <link rel="icon" type="image/png" href="imags/movies.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="images/keaflix-logo.png" sizes="32x32">
     <!-- Montserrat Google Web Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
     <!-- Font Awesome Icons -->
@@ -71,14 +71,15 @@
         <article class="card">
             <img class="card-img" src="IMG" style="width:100%">
             <h1 class="title">MOVIE TITLE</h1>
-            <span class="fa fa-star fa-2x"></span>
-            <span class="fa fa-star fa-2x"></span>
-            <span class="fa fa-star fa-2x"></span>
-            <span class="fa fa-star fa-2x"></span>
-            <span class="fa fa-star fa-2x"></span>
-            <h4 class="rating">RATING</h4>
-            <h4 class="genre">GENRE</h4>
+            <span class="fa fa-star fa-lg"></span>
+            <span class="fa fa-star fa-lg"></span>
+            <span class="fa fa-star fa-lg"></span>
+            <span class="fa fa-star fa-lg"></span>
+            <span class="fa fa-star fa-lg"></span>            
+            <h4 class="rating">RATING</h4>   
+            <h5 class="votes">VOTES</h5>            
             <p class="description">DESCRIPTION</p>
+            <h4 class="genre">GENRE</h4>
             <h4 class="year">YEAR</h4>
             <p><button class="modal-btn">Read More</button></p>
         </article>
@@ -106,12 +107,14 @@
     </article>  -->
 
     <!-- The JS for the menu -->
-    <!-- <script src="js/menu.js"></script> -->
+    <script src="js/menu.js"></script>
 
     <!-- Script to Fetch Data from the API and display them - by Konstantinos Anagnostou -->
     <!-- <script src="js/fetchdata.js"></script> -->
 
     <script>
+        // fetch data from a Google Sheets as JSON for a Movies Website
+        // Code by Konstantinos Anagnostou
 
         // Strings Constants
         const NEWEST = "Newest Movies";
@@ -147,8 +150,10 @@
         // Create a Section and a title
         let section = document.createElement("section");
 
-        // Create the menu
-        createMenu();
+        // Create the menu        
+        createMenu("newest", sortByNewest);
+        createMenu("top-rated", sortByTopRated);
+        createMenu("popular", sortByPopular);
 
         // call the fetchAllMovies function
         fetchAllMovies(GOOGLE_SHEET, sortByNewest);
@@ -161,8 +166,7 @@
 
             fetch(moviesList).then(e => e.json()).then(function (movies) {
                 let moviesJSON = movies.feed.entry;
-
-                // Sort the Movies by the newest year
+                // Sort the Movies
                 sortOrder(moviesJSON);
 
                 // For each movie in the array add these animation classes
@@ -193,14 +197,14 @@
             let id = movie.gsx$id.$t;
             let title = movie.gsx$title.$t;
             let rating = movie.gsx$imdbrating.$t;
+            let votes = movie.gsx$votes.$t;
             let description = movie.gsx$description.$t;
             let imdb_url = movie.gsx$imdburl.$t;
             let genre = movie.gsx$genres.$t;
             let actors = movie.gsx$actors.$t;
             let duration = movie.gsx$duration.$t;
             let year = movie.gsx$releaseyear.$t;
-            let youtube_id = movie.gsx$youtubeid.$t;
-            let thumbnail = BASE_IMG_YOUTUBE + youtube_id + YOUTUBE_SMALL_JPG;
+            let youtube_id = movie.gsx$youtubeid.$t;            
 
             // clone the template and display the values
             const clone = template.cloneNode(true);
@@ -210,7 +214,7 @@
                 // if the title is more than 31 characters, cut it
                 if (title.length > 31) {
                     clone.querySelector(".title").textContent = title.substring(0, 28) + "...";
-                } else {// otherwise display all the title
+                } else {// otherwise display the whole title
                     clone.querySelector(".title").textContent = title;
                 }
             }
@@ -220,6 +224,10 @@
                 clone.querySelector(".rating").textContent = RATING_STRING + rating;
                 // function to set the rating
                 calculateRating(rating, clone.querySelectorAll("span"));
+            }
+
+            if (votes) {
+                clone.querySelector(".votes").textContent = `Votes: ${votes}`;
             }
 
             // if genre is not empty or null, display it
@@ -234,7 +242,13 @@
             }
 
             // if imdb video id is not empty or null, display the thumbnail
-            if (imdb_url) {
+            if (youtube_id) {
+                let thumbnail = BASE_IMG_YOUTUBE + youtube_id + YOUTUBE_SMALL_JPG;
+                clone.querySelector(".card-img").src = thumbnail;
+            }
+            // otherwise
+            if(!youtube_id) {
+                let thumbnail = "images/fallback-img.png";
                 clone.querySelector(".card-img").src = thumbnail;
             }
 
@@ -250,52 +264,31 @@
         }
 
         // function to create the Menu
-        function createMenu() {
+        function createMenu(menuItem, sortBy) {
             // create the newest menu item
-            let menuItem = document.createElement("li");
-            menuItem.innerHTML = `<a href="#newest">${NEWEST}</a>`;
-            menuItem.addEventListener("click", function () {
+            let createItem = document.createElement("li");
+            createItem.innerHTML = `<a href="#${menuItem}">${menuItem}</a>`;
+            createItem.addEventListener("click", function () {
                 clearBody();
                 createLoadingIndicator();
-                fetchAllMovies(GOOGLE_SHEET, sortByNewest);
+                fetchAllMovies(GOOGLE_SHEET, sortBy);
             });
-            menu.appendChild(menuItem); // append the menu item inside the menu               
-            mobileMenu.appendChild(menuItem.cloneNode(true)); // append the menu item inside the mobile menu   
-
-            // create the top rated menu item
-            let menuItem1 = document.createElement("li");
-            menuItem1.innerHTML = `<a href="#top-rated">${TOP_RATED}</a>`;
-            menuItem1.addEventListener("click", function () {
+            menu.appendChild(createItem); // append the menu item inside the menu 
+            let mobileClone = createItem.cloneNode(true);
+            mobileClone.addEventListener("click", function () {
                 clearBody();
                 createLoadingIndicator();
-                fetchAllMovies(GOOGLE_SHEET, sortByTopRated);
-            });
-            menu.appendChild(menuItem1); // append the menu item inside the menu               
-            mobileMenu.appendChild(menuItem1.cloneNode(true)); // append the menu item inside the mobile menu   
-
-            // create the Popular Menu Item
-            let menuItem2 = document.createElement("li");
-            menuItem2.innerHTML = `<a href="#popular">${POPULAR}</a>`;
-            menuItem2.addEventListener("click", function () {
-                clearBody();
-                createLoadingIndicator();
-                fetchAllMovies(GOOGLE_SHEET, sortByPopular);
-            });
-            menu.appendChild(menuItem2); // append the menu item inside the menu               
-            mobileMenu.appendChild(menuItem2.cloneNode(true)); // append the menu item inside the mobile menu
+                fetchAllMovies(GOOGLE_SHEET, sortBy);
+            });             
+            mobileMenu.appendChild(mobileClone); // append the menu item inside the mobile menu   
         }
 
         // sort order by Newest Movies to oldest
         function sortByNewest(movies) {
-            // Create a Section and a title           
-            let newestTitle = document.createElement("h2");
-            newestTitle.setAttribute("id", "newest-title");
-            // set the Main Title on the Home Page = Newest Movies
-            newestTitle.textContent = NEWEST;
-            main.appendChild(newestTitle);
-            // Get a Reference to the main title (Newest Title)
-            mainTitle = document.querySelector("#newest-title");
-
+            // Create Title      
+            createTitle("newest-title");     
+           
+            // sort by year
             movies.sort(function (a, b) {
                 for (let i = 0; i < movies.length; i++) {
                     return b.gsx$releaseyear.$t - a.gsx$releaseyear.$t;
@@ -309,17 +302,13 @@
         // sort order by Top Rated Movies
         function sortByTopRated(movies) {
 
-            let topRatedTitle = document.createElement("h2");
-            topRatedTitle.setAttribute("id", "top-rated");
-            // set the Main Title on the Home Page = Top Rated Movies
-            topRatedTitle.textContent = TOP_RATED;
-            main.appendChild(topRatedTitle);
-            // Get a Reference to the main title (Top Rated)
-            mainTitle = document.querySelector("#top-rated");
+            // Create Title
+            createTitle("top-rated");             
 
+            // sort by top rated 
             movies.sort(function (a, b) {
                 for (let i = 0; i < movies.length; i++) {
-                    return b.gsx$imdbrating.$t - a.gsx$imdbrating.$t;
+                    return b.gsx$imdbrating.$t - a.gsx$imdbrating.$t;                   
                 }
             });
 
@@ -329,18 +318,17 @@
 
         // sort order by Most Popular Movies
         function sortByPopular(movies) {
-
-            let popularTitle = document.createElement("h2");
-            popularTitle.setAttribute("id", "popular-title");
-            // set the Main Title on the Home Page = Newest Movies
-            popularTitle.textContent = POPULAR;
-            main.appendChild(popularTitle);
-            // Get a Reference to the main title (Newest Title)
-            mainTitle = document.querySelector("#popular-title");
-
+            // Create Title
+            createTitle("popular-title");           
+            
+            // sort by most votes
             movies.sort(function (a, b) {
                 for (let i = 0; i < movies.length; i++) {
-                    return b.gsx$votes.$t - a.gsx$votes.$t;
+                    // get the numbers as strings and remove the dots
+                    let first = String(a.gsx$votes.$t).replace(/\./g, '');
+                    let second = String(b.gsx$votes.$t).replace(/\./g, '');
+                    // parse them as Integers & do the subtraction
+                    return parseInt(second) - parseInt(first);                    
                 }
             });
 
@@ -348,12 +336,36 @@
             movies.forEach(populateUI);
         }
 
-        // utility function to display the loading image 
+        // A function to create the title
+        // for each page
+        function createTitle(title) {
+            // Create Title
+            let createTitle = document.createElement("h2");
+            createTitle.setAttribute("id", title);
+            // set the Main Title on the Home Page 
+            // using switch statement
+            switch(title) {
+                case "newest-title":
+                   createTitle.textContent = NEWEST;
+                   break;
+                case "top-rated":
+                   createTitle.textContent = TOP_RATED; 
+                   break;
+                case "popular-title":
+                   createTitle.textContent = POPULAR; 
+                   break;     
+            }
+            // append the title on the main content
+            main.appendChild(createTitle);
+            // Get a Reference to the main title
+            mainTitle = document.querySelector(`#${title}`);
+        }
+
+        // function to display the loading image 
         function setLoadingHideTitles() {
             loadingIndicator.style.display = "block";            
         }
 
-        // utility function to hide the loading image 
         // Function to Hide Loading Indicator / Show titles
         function hideLoadingSetTitles() {
             // Hide the Loading Indicator
