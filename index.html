@@ -75,9 +75,9 @@
             <span class="fa fa-star fa-lg"></span>
             <span class="fa fa-star fa-lg"></span>
             <span class="fa fa-star fa-lg"></span>
-            <span class="fa fa-star fa-lg"></span>            
-            <h4 class="rating">RATING</h4>   
-            <h5 class="votes">VOTES</h5>            
+            <span class="fa fa-star fa-lg"></span>
+            <h4 class="rating">RATING</h4>
+            <h5 class="votes">VOTES</h5>
             <p class="description">DESCRIPTION</p>
             <h4 class="genre">GENRE</h4>
             <h4 class="year">YEAR</h4>
@@ -204,7 +204,7 @@
             let actors = movie.gsx$actors.$t;
             let duration = movie.gsx$duration.$t;
             let year = movie.gsx$releaseyear.$t;
-            let youtube_id = movie.gsx$youtubeid.$t;            
+            let youtube_id = movie.gsx$youtubeid.$t;
 
             // clone the template and display the values
             const clone = template.cloneNode(true);
@@ -225,7 +225,8 @@
                 // function to set the rating
                 calculateRating(rating, clone.querySelectorAll("span"));
             }
-
+ 
+            // if votes are not null or empty, display them
             if (votes) {
                 clone.querySelector(".votes").textContent = `Votes: ${votes}`;
             }
@@ -246,8 +247,8 @@
                 let thumbnail = BASE_IMG_YOUTUBE + youtube_id + YOUTUBE_SMALL_JPG;
                 clone.querySelector(".card-img").src = thumbnail;
             }
-            // otherwise
-            if(!youtube_id) {
+            // otherwise set a default image
+            if (!youtube_id) {
                 let thumbnail = "images/fallback-img.png";
                 clone.querySelector(".card-img").src = thumbnail;
             }
@@ -274,20 +275,21 @@
                 fetchAllMovies(GOOGLE_SHEET, sortBy);
             });
             menu.appendChild(createItem); // append the menu item inside the menu 
+            // clone the menu item & add click event
             let mobileClone = createItem.cloneNode(true);
             mobileClone.addEventListener("click", function () {
                 clearBody();
                 createLoadingIndicator();
                 fetchAllMovies(GOOGLE_SHEET, sortBy);
-            });             
+            });
             mobileMenu.appendChild(mobileClone); // append the menu item inside the mobile menu   
         }
 
         // sort order by Newest Movies to oldest
         function sortByNewest(movies) {
             // Create Title      
-            createTitle("newest-title");     
-           
+            createTitle("newest-title");
+
             // sort by year
             movies.sort(function (a, b) {
                 for (let i = 0; i < movies.length; i++) {
@@ -303,12 +305,12 @@
         function sortByTopRated(movies) {
 
             // Create Title
-            createTitle("top-rated");             
+            createTitle("top-rated");
 
             // sort by top rated 
             movies.sort(function (a, b) {
                 for (let i = 0; i < movies.length; i++) {
-                    return b.gsx$imdbrating.$t - a.gsx$imdbrating.$t;                   
+                    return b.gsx$imdbrating.$t - a.gsx$imdbrating.$t;
                 }
             });
 
@@ -319,8 +321,8 @@
         // sort order by Most Popular Movies
         function sortByPopular(movies) {
             // Create Title
-            createTitle("popular-title");           
-            
+            createTitle("popular-title");
+
             // sort by most votes
             movies.sort(function (a, b) {
                 for (let i = 0; i < movies.length; i++) {
@@ -328,7 +330,7 @@
                     let first = String(a.gsx$votes.$t).replace(/\./g, '');
                     let second = String(b.gsx$votes.$t).replace(/\./g, '');
                     // parse them as Integers & do the subtraction
-                    return parseInt(second) - parseInt(first);                    
+                    return parseInt(second) - parseInt(first);
                 }
             });
 
@@ -337,23 +339,23 @@
         }
 
         // A function to create the title
-        // for each page
+        // for each page (newest, top rated, popular)
         function createTitle(title) {
             // Create Title
             let createTitle = document.createElement("h2");
             createTitle.setAttribute("id", title);
             // set the Main Title on the Home Page 
             // using switch statement
-            switch(title) {
+            switch (title) {
                 case "newest-title":
-                   createTitle.textContent = NEWEST;
-                   break;
+                    createTitle.textContent = NEWEST;
+                    break;
                 case "top-rated":
-                   createTitle.textContent = TOP_RATED; 
-                   break;
+                    createTitle.textContent = TOP_RATED;
+                    break;
                 case "popular-title":
-                   createTitle.textContent = POPULAR; 
-                   break;     
+                    createTitle.textContent = POPULAR;
+                    break;
             }
             // append the title on the main content
             main.appendChild(createTitle);
@@ -363,7 +365,7 @@
 
         // function to display the loading image 
         function setLoadingHideTitles() {
-            loadingIndicator.style.display = "block";            
+            loadingIndicator.style.display = "block";
         }
 
         // Function to Hide Loading Indicator / Show titles
@@ -419,23 +421,23 @@
                 span[3].classList.add("checked");
                 span[4].classList.add("checked");
             }
-        }
+        }       
 
-        // function to clear the body and the section
-        // before new fetch
-        function clearBody() {
-            main.innerHTML = "";
-            section.innerHTML = "";
-        }
-
+        // function to create the loadingIndicator
         function createLoadingIndicator() {
-             // Create the Loading Indicator 
+            // Create the Loading Indicator 
             let createImage = document.createElement("img");
             createImage.setAttribute("id", "loading");
             createImage.src = LOADING_IMAGE;
             main.appendChild(createImage);
             // Get a reference to the loading indidator
             loadingIndicator = document.getElementById("loading");
+        }
+
+         // function to clear the body and the section
+         function clearBody() {
+            main.innerHTML = "";
+            section.innerHTML = "";
         }
 
     </script>
