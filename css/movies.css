@@ -1,7 +1,11 @@
+/* Global Variables with our values */
 :root {
-    --main-color: #9C27B0;
-    --main-text-color: #222222;
-    --color-white:#fff;
+    --main-color: #FFFF00;
+	--secondary-color:#000;
+	--color-white:#fff;
+	--color-checked:#FFDF00;
+	--fonts-montserrat:'Montserrat', sans-serif;
+	--transparent-main-color: rgba(255, 255, 0, 0.94);
 }
 
 html,
@@ -10,7 +14,7 @@ body {
 	padding: 0px;
 	background-color: var(--color-white);
 	height: 100%;
-	font-family: 'Montserrat', sans-serif;
+	font-family: var(--fonts-montserrat);
     scroll-behavior: smooth;    
 }
 
@@ -28,17 +32,18 @@ body {
 h2 {
 	text-align:center;
     padding:12px;
-    margin-top:70px;
-	color:var(--color-white);
+	color:var(--secondary-color);
     background-color:var(--main-color);
-    display: none;
+	display: none;
+	margin-top:8px;
+	margin-bottom:8px;
 }
 
 h4 {
     font-size:15px;
 }
-/* This is the Main Grid CSS of the Home Page */
 
+/* This is the Main Grid CSS of the Home Page */
 #home-grid {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(100%, 1fr));
@@ -49,12 +54,7 @@ h4 {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(100%, 1fr));
 }
-/* #title {
-	grid-area: title-area;
-	padding-top: 50px;
-	text-align: center;
-	margin-bottom:0px;
-} */
+
 
 /* We use the repeat() function & auto-fill keyword for the Responsiveness 
    Nice resource here ----> https://css-tricks.com/auto-sizing-columns-css-grid-auto-fill-vs-auto-fit/
@@ -96,7 +96,7 @@ section {
 	transition: transform 0.5s ease-out;
 }
 
-@media(max-width: 1000px) {
+@media(max-width: 768px) {
 	#navbar ul {
 		display: none;
 	}
@@ -107,7 +107,7 @@ section {
 }
 
 #navbar li a {
-	color: var(--color-white);
+	color: var(--secondary-color);
 	display: block;
 	font-size: 12px;
 	letter-spacing: 1px;
@@ -133,7 +133,7 @@ section {
 	width: 0%;
 	height: 1px;
 	bottom: -12px;
-	background: var(--color-white);
+	background: var(--secondary-color);
 }
 
 #navbar li a:before {
@@ -142,12 +142,12 @@ section {
 }
 
 #navbar li a:after {
-	background: var(--color-white);
+	background: var(--secondary-color);
 	right: 0;
 }
 
 #navbar li a:hover:before {
-	background: var(--color-white);
+	background: var(--secondary-color);
 	width: 100%;
 	transition: width 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
@@ -161,8 +161,8 @@ section {
 /*======= Responsive Mobile Menu========*/
 
 .overlay-menu {
-	background: rgba(156, 39, 176, 0.98);
-	color: var(--color-white);
+	background: var(--transparent-main-color);
+	color: var(--secondary-color);
 	justify-content: center;
 	position: fixed;
 	top: 0;
@@ -190,7 +190,7 @@ section {
 	text-transform: uppercase;
 	transition: color 0.3s ease;
 	text-decoration: none;
-	color: var(--color-white);
+	color: var(--secondary-color);
 }
 
 
@@ -212,13 +212,13 @@ section {
 }
 
 .overlay-menu li a:after {
-	background: var(--color-white);
+	background: var(--secondary-color);
 	right: 0;
 	/* transition: width 0.8s cubic-bezier(0.22, 0.61, 0.36, 1); */
 }
 
 .overlay-menu li a:hover:before {
-	background: var(--color-white);
+	background: var(--secondary-color);
 	width: 70%;
 	transition: width 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
@@ -236,20 +236,41 @@ section {
     padding-left: 120px;
     padding-top:6px;
     padding-bottom:6px;
-	height: 50px;
+	height: 55px;
 	float: left;
 }
 
+#banner {
+	width:100%;
+	margin-top:50px;
+	background-image: url("../images/banner.jpg");
+	background-repeat: no-repeat;
+	background-position: top;
+	background-size: cover;
+	height:500px;
+	margin-bottom:0;
+	display: flex;
+	align-items: center;
+	justify-content: center;	
+}
+#transparent-title{
+	width: 100%;
+	padding:18px;
+	text-align:center;
+	color:var(--color-white);
+	background-color: rgba(0, 0, 0, 0.80);
+	font-size:24px;
+}
 
 /* The Style for  the Card */
-
 .card {
 	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 	max-width: 300px;
 	margin: auto;
 	text-align: center;
     font-family: arial; 
-    background-color: var(--color-white);
+	background-color: var(--color-white);
+	cursor:pointer;
 }
 
 .card-img {
@@ -261,16 +282,12 @@ section {
 	box-shadow: 0 8px 24px 0 rgba(0, 0, 0, 0.2);
 }
 
-.price {
-	color: grey;
-	font-size: 18px;
-}
 
 .card button {
 	border: none;
 	outline: 0;
 	padding: 12px;
-	color: var(--color-white);
+	color: var(--secondary-color);
 	background-color: var(--main-color);
 	text-align: center;
 	cursor: pointer;
@@ -295,12 +312,12 @@ section {
 }
 /* Rating */
 .checked {
-    color:#FFDF00;
+    color:var(--color-checked);
 }
 
 /* The Modal (background) */
 
-.modal {
+.modal {	
 	display: none;
 	position: fixed;
 	z-index: 1;
@@ -310,7 +327,7 @@ section {
 	width: 100%;
 	height: 100%;
 	overflow: auto;
-	background-color: rgb(0, 0, 0);
+	background-color: var(color-white);
 	/* Fallback color */
 	background-color: rgba(0, 0, 0, 0.4);
 	/* Black w/ opacity */
@@ -324,28 +341,79 @@ section {
 	margin: auto;
 	padding: 20px;
 	border: 1px solid #888;
-	width: 80%;
+	width: 70%;
 }
 
 .modal-title {
 	text-align: center;
 }
 
-.modal-image {
+.modal-video {
 	display: block;
 	margin-right: auto;
 	margin-left: auto;
 	width: 100%;
+	height:450px;
 	max-width: 800px;
+} @media (max-width:480px) {
+	.modal-video  {	
+	  height:250px;
+	}
+  }
+
+.modal-rating {
+  text-align: center;
+  color: var(--main-color);
+  font-size: 18px;
+  font-weight:bold;
 }
 
+.star {
+	margin-top:8px;
+}
+.center{
+	text-align:center;
+}
+.modal-actors {
+	font-weight:bold;
+}
+.imdb-link-btn {
+	display: block;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 12px;
+    width: 200px;
+	cursor: pointer;
+	background-color: var(--main-color);
+	color: var(--secondary-color);
+	border: none;
+	margin-top:24px;
+	border-radius: 6px;
+	font-size:15px;
+}
+.imdb-link-btn:hover {
+	background-color: var(--secondary-color);
+	color:var(--main-color);
+}
 
-/* The Recipe's Details */
+.modal-rating {
+	color:var(--secondary-color);
+}
 
-.recipeName {
-	font-size: 18px;
-	padding-left: 8px;
-	padding-right: 8px;
+.modal-description {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	max-width: 800px;
+	word-break: keep-all;
+}
+
+.modal-actors {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	max-width: 800px;
+	word-break: keep-all;
 }
 
 .description {
@@ -354,30 +422,16 @@ section {
 	padding-right: 8px;
 }
 
-.modal-price {
-	text-align: center;
-	color: var(--main-color);
-  font-size: 18px;
-  font-weight:bold;
-}
-
-
-.longDescription {
-	display: block;
-	margin-left: auto;
-	margin-right: auto;
-	max-width: 800px;
-	word-break: keep-all;
-}
-
 ul.horizontal {
 	list-style-type: none;
+	padding-top:10px;
 	display: block;
 	margin-left: auto;
 	margin-right: auto;
 	max-width: 800px;
+    word-break: keep-all;
 } @media (max-width:900px) {
-  ul.horizontal {
+  ul.horizontal {	
     padding:0px;
   }
 }
@@ -385,13 +439,13 @@ ul.horizontal {
 ul.horizontal li {
 	display: inline;
 	padding-right: 18px;
-	color: var(--main-color);
+	color: var(--secondary-color);
   font-weight: bold;
   text-align:center;
 } @media (max-width:900px) {
   ul.horizontal li {
     display:block;    
-    color: var(--main-color);
+    color: var(--secondary-color);
     font-weight: bold;    
   }
 }
@@ -407,7 +461,7 @@ ul.horizontal li {
 
 .close:hover,
 .close:focus {
-	color: #000;
+	color: var(--secondary-color);
 	text-decoration: none;
 	cursor: pointer;
 }
@@ -553,21 +607,13 @@ ul.horizontal li {
 	}
 }
 
-
 /* Media Queries for Responsive Web Design */
-
-
-/* SmartPhones | Screens 320px - 480px */
-
-@media only screen and (min-width: 320px) and (max-width: 1000px) {
+/*  Screens 320px - 1000px */
+@media only screen and (min-width: 320px) and (max-width: 768px) {
 	/* The style for the Logo */
 	#logo {
-		height: 50px;
-		float: none;
-		display: block;
-		margin-left: auto;
-		margin-right: auto;
-		padding-left: 0;
+		height: 55px;	
+		padding-left: 40px;
 	}
 	.menuIcon {
 		cursor: pointer;
@@ -581,7 +627,7 @@ ul.horizontal li {
 	}
 	/* Icon Bars */
 	.icon-bars {
-		background: var(--color-white);
+		background: var(--secondary-color);
 		position: absolute;
 		left: 1px;
 		top: 45%;
@@ -590,7 +636,7 @@ ul.horizontal li {
 		transition: 0.4s;
 	}
 	.icon-bars::before {
-		background: var(--color-white);
+		background: var(--secondary-color);
 		content: '';
 		position: absolute;
 		left: 0;
@@ -601,7 +647,7 @@ ul.horizontal li {
 	}
 	.icon-bars::after {
 		margin-top: 0px;
-		background: var(--color-white);
+		background: var(--secondary-color);
 		content: '';
 		position: absolute;
 		left: 0;
@@ -612,7 +658,7 @@ ul.horizontal li {
 	}
 	/* Bars Shadows */
 	.icon-bars.overlay {
-		background: var(--color-white);
+		background: var(--secondary-color);
 		width: 20px;
 		animation: middleBar 3s infinite 0.5s;
 	}
@@ -628,7 +674,7 @@ ul.horizontal li {
 		}
 	}
 	.icon-bars.overlay::before {
-		background: var(--color-white);
+		background: var(--secondary-color);
 		width: 10px;
 		animation: topBar 3s infinite 0.2s;
 	}
@@ -644,7 +690,7 @@ ul.horizontal li {
 		}
 	}
 	.icon-bars.overlay::after {
-		background: var(--color-white);
+		background: var(--secondary-color);
 		width: 15px;
 		animation: bottomBar 3s infinite 1s;
 	}

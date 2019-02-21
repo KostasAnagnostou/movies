@@ -31,7 +31,7 @@
             <!-- The Navigation Bar / Menu -->
             <nav id="navbar" class="navbarbox">
                 <!-- Logo with a link to the Home Page -->
-                <a href="index.html"><img src="images/keaflix-logo.png" id="logo" class="centered"
+                <a href="index.html"><img src="images/keaflex-logo.png" id="logo" class="centered"
                         alt="The logo of Movies Website"></a>
                 <div class="nav-wrapper">
                     <!-- Navbar Links -->
@@ -62,7 +62,7 @@
 
         <!-- The Footer of the Website -->
         <footer id="footer">
-            <p class="copyright">&copy; 2019 Movies </p>
+            <!-- We Insert the copyright content Dynamically -->
         </footer>
     </div>
 
@@ -81,49 +81,61 @@
             <p class="description">DESCRIPTION</p>
             <h4 class="genre">GENRE</h4>
             <h4 class="year">YEAR</h4>
-            <p><button class="modal-btn">Read More</button></p>
+            <p><button class="open-btn">Read More</button></p>
         </article>
     </template>
 
     <!-- Modal content -->
-    <!-- <article class="modal myModal">
+    <article class="modal myModal">
         <div class="modal-content">
             <span class="close">&times;</span>
             <h1 class="modal-title"></h1>
-            <img class="modal-image" src="" alt="">
-            <p class="modal-price"></p>
-            <p class="old-price"></p>
-            <p class="longDescription"></p>
+            <iframe class="modal-video" src="" frameborder="0"
+                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen></iframe>
+            <p class="center">
+                <span class="star fa fa-star fa-lg"></span>
+                <span class="star fa fa-star fa-lg"></span>
+                <span class="star fa fa-star fa-lg"></span>
+                <span class="star fa fa-star fa-lg"></span>
+                <span class="star fa fa-star fa-lg"></span>
+            </p>
+            <p class="modal-rating"></p>
+            <p class="modal-description"></p>
+            <p class="modal-actors"></p>
             <ul class="horizontal">
-                <li class="region"></li>
-                <li class="modal-category"></li>
-                <li class="allergens"></li>
-                <li class="vegetarian-modal"></li>
-                <li class="alcohol"></li>
-            </ul> -->
-    <!-- The loading Image here -->
-    <!-- <img src="imags/loading.gif" id="loading-modal" alt="loading">
+                <li class="modal-genre"></li>
+                <li class="modal-year"></li>
+                <li class="modal-duration"></li>
+            </ul>
+            <button class="imdb-link-btn">Check it on IMDB</button>
+            <!-- The loading Image here -->
+            <!-- <img src="imags/loading.gif" id="loading-modal" alt="loading"> -->
         </div>
-    </article>  -->
+    </article>
 
     <!-- The JS for the menu -->
     <script src="js/menu.js"></script>
-
-    <!-- Script to Fetch Data from the API and display them - by Konstantinos Anagnostou -->
-    <!-- <script src="js/fetchdata.js"></script> -->
 
     <script>
         // fetch data from a Google Sheets as JSON for a Movies Website
         // Code by Konstantinos Anagnostou
 
         // Strings Constants
+        const KEAFLEX_TITLE = `KEAFLEX: `;
+        const COPYRIGHT_STRING = "&copy; 2019 KEAFLEX - Group Project for KEA";
         const NEWEST = "Newest Movies";
         const TOP_RATED = "Top Rated";
         const POPULAR = "Popular";
         const RELEASE = "Release Year: ";
-        const CATEGORY = "Genre: ";
+        const GENRE_STRING = "Genre: ";
         const RATING_STRING = "IMDB Rating: "
         const LOADING_IMAGE = "images/loading.gif";
+        const ACTORS = "Actors: ";
+        const DURATION = "Duration: ";
+        const VOTES_STRING = "Votes: ";
+        const MINUTES = " mins";
+        const BANNER = "images/banner.jpg";
 
         // The googleSheet link
         const GOOGLE_SHEET = "https://spreadsheets.google.com/feeds/list/156eQXgwJy0VvrwW6GH61fKfENcL3g4gRxlPaeLciy5Y/od6/public/values?alt=json";
@@ -131,7 +143,9 @@
         // The PATHS to construct the url for the youtube Images 
         const BASE_IMG_YOUTUBE = "https://img.youtube.com/vi/";
         const YOUTUBE_SMALL_JPG = "/mqdefault.jpg";
-        const YOUTUBE_BIG_JPG = "/maxresdefault.jpg";
+
+        // The youtube path for the embedded videos
+        const YOUTUBE_VIDEO = "https://www.youtube.com/embed/";
 
         // The main HTML Element and the template 
         const main = document.querySelector("main");
@@ -141,20 +155,33 @@
         const menu = document.getElementById("menu");
         const mobileMenu = document.getElementById("menu-mobile");
 
+        // The Modal details
+        const modal = document.querySelector('.myModal');
+        const modalTitle = document.querySelector(".modal-title");
+        const modalVideo = document.querySelector(".modal-video");
+        const modalRating = document.querySelector(".modal-rating");
+        const modalStars = document.querySelectorAll(".star");
+        const modalDescription = document.querySelector(".modal-description");
+        const modalGenre = document.querySelector(".modal-genre");
+        const modalYear = document.querySelector(".modal-year");
+        const modalActors = document.querySelector(".modal-actors");
+        const modalDuration = document.querySelector(".modal-duration");
+        const modalImdbUrl = document.querySelector(".imdb-link-btn");
+
         // Create the Loading Indicator 
         let loadingIndicator = "";
         createLoadingIndicator();
 
         // main title of the page
         let mainTitle = "";
-        // Create a Section and a title
+        // Create a Section 
         let section = document.createElement("section");
 
         // Create the menu        
         createMenu("newest", sortByNewest);
         createMenu("top-rated", sortByTopRated);
         createMenu("popular", sortByPopular);
-        
+
         // call the fetchAllMovies function, sorted by newest
         fetchAllMovies(GOOGLE_SHEET, sortByNewest);
 
@@ -162,7 +189,7 @@
         // from Google Sheets
         function fetchAllMovies(moviesList, sortOrder) {
             // display the loading image
-            setLoadingHideTitles();
+            setLoading();
 
             fetch(moviesList).then(e => e.json()).then(function (movies) {
                 let moviesJSON = movies.feed.entry;
@@ -184,6 +211,12 @@
                         });
                     });
                 }
+
+                // if there isn't already a copyright sign, create it
+                if (!document.querySelector(".copyright")) {
+                    // create the footer              
+                    createFooter();
+                }
             });
         }
 
@@ -199,12 +232,12 @@
             let rating = movie.gsx$imdbrating.$t;
             let votes = movie.gsx$votes.$t;
             let description = movie.gsx$description.$t;
-            let imdb_url = movie.gsx$imdburl.$t;
+            let imdbUrl = movie.gsx$imdburl.$t;
             let genre = movie.gsx$genres.$t;
             let actors = movie.gsx$actors.$t;
             let duration = movie.gsx$duration.$t;
             let year = movie.gsx$releaseyear.$t;
-            let youtube_id = movie.gsx$youtubeid.$t;
+            let youtubeId = movie.gsx$youtubeid.$t;
 
             // clone the template and display the values
             const clone = template.cloneNode(true);
@@ -225,15 +258,15 @@
                 // function to set the rating
                 calculateRating(rating, clone.querySelectorAll("span"));
             }
- 
+
             // if votes are not null or empty, display them
             if (votes) {
-                clone.querySelector(".votes").textContent = `Votes: ${votes}`;
+                clone.querySelector(".votes").textContent = VOTES_STRING + votes;
             }
 
             // if genre is not empty or null, display it
             if (genre) {
-                clone.querySelector(".genre").textContent = CATEGORY + genre;
+                clone.querySelector(".genre").textContent = GENRE_STRING + genre;
             }
 
             // if description is not empty or null, display it
@@ -243,12 +276,12 @@
             }
 
             // if imdb video id is not empty or null, display the thumbnail
-            if (youtube_id) {
-                let thumbnail = BASE_IMG_YOUTUBE + youtube_id + YOUTUBE_SMALL_JPG;
+            if (youtubeId) {
+                let thumbnail = BASE_IMG_YOUTUBE + youtubeId + YOUTUBE_SMALL_JPG;
                 clone.querySelector(".card-img").src = thumbnail;
             }
             // otherwise set a default image
-            if (!youtube_id) {
+            if (!youtubeId) {
                 let thumbnail = "images/fallback-img.png";
                 clone.querySelector(".card-img").src = thumbnail;
             }
@@ -258,15 +291,101 @@
                 clone.querySelector(".year").textContent = RELEASE + year;
             }
 
+
+            // pass the data into the modal when clicked
+            clone.querySelector(".open-btn").addEventListener("click", function () {
+                // function to set the modal - we don't have to fetch again 
+                // we are passing directly all the data
+                setupModal(title, rating, votes, description, genre, year, youtubeId, imdbUrl, actors, duration);
+            });
+
             // append each movie to the section
             // and the section inside the main
             section.appendChild(clone);
             main.appendChild(section);
         }
 
+        // Function to Setup the modal
+        // pass the data for the movie 
+        function setupModal(mTitle, mRating, mVotes, mDescription, mGenre, mYear, mYoutubeId, mImdbUrl, mActors, mDuration) {
+
+            let span = document.getElementsByClassName("close")[0];
+
+            // When the user clicks (x), close the modal
+            span.onclick = function () {
+                // clear the modal    
+                clearModal();
+            }
+
+            // When the user clicks anywhere outside of the modal, close it
+            window.onclick = function (event) {
+                if (event.target == modal) {
+                    // clear the modal    
+                    clearModal();
+                }
+            }
+
+            // if the title has a value, display the data
+            if (mTitle) {
+
+                // display the modal
+                modal.style.display = "block";
+
+                // check if the data have a value 
+                // set them & display them
+                modalTitle.textContent = mTitle;
+
+                // if the movie has a youtubeId
+                if (mYoutubeId) {
+                    // display the video
+                    let video = YOUTUBE_VIDEO + mYoutubeId;
+                    modalVideo.src = video;
+                }                
+               
+                if (mRating) {
+                    modalRating.textContent = RATING_STRING + mRating;
+                    calculateRating(mRating, modalStars);
+                }
+               
+                if (mDescription) {
+                    modalDescription.textContent = mDescription;
+                }
+                
+                if (mGenre) {
+                    modalGenre.textContent = GENRE_STRING + mGenre;
+                }
+                
+                if (mYear) {
+                    modalYear.textContent = RELEASE + mYear;
+                }
+                
+                if (mActors) {
+                    modalActors.textContent = ACTORS + mActors;
+                }
+                
+                if (mDuration) {
+                    modalDuration.textContent = DURATION + mDuration + MINUTES;
+                }
+               
+                if (mImdbUrl) {
+                    // open the imdb url when clicked the imdb url button            
+                    modalImdbUrl.addEventListener("click", openImdbUrl);
+                    // pass the parameter ---> https://stackoverflow.com/questions/256754/how-to-pass-arguments-to-addeventlistener-listener-function.
+                    modalImdbUrl.mImdbUrl = mImdbUrl;
+                }
+            }
+        }
+        
+        // function to open the url from IMDB
+        function openImdbUrl(url) {
+            // open the link in a new page 
+            // find the parameter using target attribute           
+            window.open(url.target.mImdbUrl, "_blank");
+        }
+
         // function to create the Menu
         function createMenu(menuItem, sortBy) {
-            // create the newest menu item
+            // create the menu item
             let createItem = document.createElement("li");
             createItem.innerHTML = `<a href="#${menuItem}">${menuItem}</a>`;
             createItem.addEventListener("click", function () {
@@ -287,6 +406,10 @@
 
         // sort order by Newest Movies to oldest
         function sortByNewest(movies) {
+
+            // Create Banner
+            createBanner("Find a Fresh Movie!");
+
             // Create Title      
             createTitle("newest-title");
 
@@ -304,6 +427,9 @@
         // sort order by Top Rated Movies
         function sortByTopRated(movies) {
 
+            // Create Banner
+            createBanner("Find an All-Star Movie!");
+
             // Create Title
             createTitle("top-rated");
 
@@ -320,6 +446,10 @@
 
         // sort order by Most Popular Movies
         function sortByPopular(movies) {
+
+            // Create Banner
+            createBanner("Find a Legendary Movie!");
+
             // Create Title
             createTitle("popular-title");
 
@@ -359,16 +489,46 @@
             }
             // append the title on the main content
             main.appendChild(createTitle);
-            // Get a Reference to the main title
-            mainTitle = document.querySelector(`#${title}`);
+            // Get a Reference to the main title            
+            mainTitle = document.querySelector(`#${title}`); // ES6 String Interpolation with backticks `${variable}`
+        }
+
+        // Function to create the banner
+        function createBanner(title) {
+            // create the banner as a background inside the paragraph
+            let createBanner = document.createElement("p");
+            createBanner.setAttribute("id", "banner");
+            createBanner.src = BANNER;
+            main.appendChild(createBanner);
+
+            // get a reference to the banner
+            let banner = document.querySelector("#banner");
+
+            // Create the main title & append it inside the banner (paragraph)
+            let h1 = document.createElement("h1");
+            h1.setAttribute("id", "transparent-title");
+            h1.textContent = KEAFLEX_TITLE + title;
+            banner.appendChild(h1);
+
+        }
+
+        // function to create the copyright on the footer
+        function createFooter() {
+            let createCopyright = document.createElement("p");
+            createCopyright.classList.add("copyright");
+            createCopyright.innerHTML = COPYRIGHT_STRING;
+
+            // Get a reference to the footer and append the copyright
+            let footer = document.querySelector("#footer");
+            footer.appendChild(createCopyright);
         }
 
         // function to display the loading image 
-        function setLoadingHideTitles() {
+        function setLoading() {
             loadingIndicator.style.display = "block";
         }
 
-        // Function to Hide Loading Indicator / Show titles
+        // Function to Hide Loading Indicator / Show title
         function hideLoadingSetTitles() {
             // Hide the Loading Indicator
             loadingIndicator.style.display = "none";
@@ -377,12 +537,20 @@
 
         // calculate the rating and set the stars
         function calculateRating(rate, span) {
+
+            // clear the half stars & remove the checked class
+            // before the calculation
+            for (let i = 0; i < span.length; i++) {
+                span[i].classList.remove("fa-star-half", "checked");
+                span[i].classList.add("fa-star");
+            }
+
             if (rate <= 3) {
                 span[0].classList.add("checked");
                 span[1].classList.remove("fa-star");
                 span[1].classList.add("fa-star-half", "checked");
             }
-            if (rate > 3 && rate < 5) {
+            if (rate > 3 && rate <= 5.5) {
                 span[0].classList.add("checked");
                 span[1].classList.add("checked");
                 span[2].classList.remove("fa-star");
@@ -421,7 +589,7 @@
                 span[3].classList.add("checked");
                 span[4].classList.add("checked");
             }
-        }       
+        }
 
         // function to create the loadingIndicator
         function createLoadingIndicator() {
@@ -434,12 +602,25 @@
             loadingIndicator = document.getElementById("loading");
         }
 
-         // function to clear the body and the section
-         function clearBody() {
+        // function to clear the body and the section
+        function clearBody() {
             main.innerHTML = "";
             section.innerHTML = "";
         }
 
+        // clear the modal details & remove the event listener
+        function clearModal() {
+            modal.style.display = "none";
+            modalTitle.textContent = "";
+            modalVideo.src = "";
+            modalRating.textContent = "";
+            modalDescription.textContent = "";
+            modalGenre.textContent = "";
+            modalYear.textContent = "";
+            modalActors.textContent = "";
+            modalDuration.textContent = "";
+            modalImdbUrl.removeEventListener("click", openImdbUrl);
+        }
     </script>
 
 </body>
