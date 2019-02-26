@@ -2,6 +2,7 @@
 :root {
     --main-color: #FFFF00;
 	--secondary-color:#000;
+	--body-color:#EEEEEE;
 	--color-white:#fff;
 	--color-checked:#FFDF00;
 	--fonts-montserrat:'Montserrat', sans-serif;
@@ -12,18 +13,11 @@ html,
 body {
 	margin: 0px;
 	padding: 0px;
-	background-color: var(--color-white);
+	background-color: var(--body-color);
 	height: 100%;
 	font-family: var(--fonts-montserrat);
     scroll-behavior: smooth;    
 }
-
-/* main {
-    background-image: url('../images/theater.jpg');
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size:cover;
-} */
 
 * {
 	box-sizing: border-box;
@@ -40,7 +34,7 @@ h2 {
 }
 
 h4 {
-    font-size:15px;
+	font-size:15px;
 }
 
 /* This is the Main Grid CSS of the Home Page */
@@ -119,8 +113,9 @@ section {
 	transition: all 0.5s ease;
 }
 
-#navbar li a:hover {
-	color: #E0E0E0;
+#navbar li a:hover,
+#navbar li a.active {
+	color: #777777;
 	transition: all 1s ease;
 }
 
@@ -146,13 +141,15 @@ section {
 	right: 0;
 }
 
-#navbar li a:hover:before {
+#navbar li a:hover:before,
+#navbar li a.active:before  {
 	background: var(--secondary-color);
 	width: 100%;
 	transition: width 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
-#navbar li a:hover:after {
+#navbar li a:hover:after,
+#navbar li a.active:after {
 	background: transparent;
 	width: 100%;
 }
@@ -243,23 +240,27 @@ section {
 #banner {
 	width:100%;
 	margin-top:50px;
-	background-image: url("../images/banner.jpg");
 	background-repeat: no-repeat;
 	background-position: top;
 	background-size: cover;
-	height:500px;
+	background-color: rgba(0,0,0, 0.60);
+	height:320px;
 	margin-bottom:0;
 	display: flex;
 	align-items: center;
-	justify-content: center;	
+	justify-content: center;
+	margin-bottom:12px;	
 }
 #transparent-title{
 	width: 100%;
+	height:320px;
 	padding:18px;
+	padding-top:130px;
 	text-align:center;
 	color:var(--color-white);
-	background-color: rgba(0, 0, 0, 0.80);
-	font-size:24px;
+	background-color: rgba(0,0,0, 0.50);	
+	font-size:48px;
+	text-transform: uppercase;
 }
 
 /* The Style for  the Card */
@@ -308,7 +309,7 @@ section {
 .year {
     padding-left: 8px;
     padding-right: 8px;
-    text-align: left;
+    text-align: center;
 }
 /* Rating */
 .checked {
@@ -476,7 +477,7 @@ ul.horizontal li {
 #loading,
 #loading-modal {
     margin-top:100px;
-    width:150px;
+    width:200px;
 	display: none;
 	margin-left: auto;
 	margin-right: auto;
@@ -542,8 +543,8 @@ ul.horizontal li {
 }
 
 .animated {
-	-webkit-animation-duration: 1s;
-	animation-duration: 1s;
+	-webkit-animation-duration: 500ms;
+	animation-duration: 500ms;
 	-webkit-animation-fill-mode: both;
 	animation-fill-mode: both;
 }

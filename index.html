@@ -77,11 +77,11 @@
             <span class="fa fa-star fa-lg"></span>
             <span class="fa fa-star fa-lg"></span>
             <h4 class="rating">RATING</h4>
-            <h5 class="votes">VOTES</h5>
-            <p class="description">DESCRIPTION</p>
+            <!-- <h5 class="votes">VOTES</h5> -->
+            <!-- <p class="description">DESCRIPTION</p> -->
             <h4 class="genre">GENRE</h4>
-            <h4 class="year">YEAR</h4>
-            <p><button class="open-btn">Read More</button></p>
+            <!-- <h4 class="year">YEAR</h4>
+            <p><button class="open-btn">Read More</button></p> -->
         </article>
     </template>
 
@@ -99,8 +99,8 @@
                 <span class="star fa fa-star fa-lg"></span>
                 <span class="star fa fa-star fa-lg"></span>
                 <span class="star fa fa-star fa-lg"></span>
-            </p>
-            <p class="modal-rating"></p>
+            </p>            
+            <p class="modal-rating"></p>           
             <p class="modal-description"></p>
             <p class="modal-actors"></p>
             <ul class="horizontal">
@@ -122,20 +122,20 @@
         // Code by Konstantinos Anagnostou
 
         // Strings Constants
-        const KEAFLEX_TITLE = `KEAFLEX: `;
         const COPYRIGHT_STRING = "&copy; 2019 KEAFLEX - Group Project for KEA";
         const NEWEST = "Newest Movies";
         const TOP_RATED = "Top Rated";
         const POPULAR = "Popular";
         const RELEASE = "Release Year: ";
         const GENRE_STRING = "Genre: ";
-        const RATING_STRING = "IMDB Rating: "
+        const RATING_STRING = " on IMDB";
         const LOADING_IMAGE = "images/loading.gif";
         const ACTORS = "Actors: ";
         const DURATION = "Duration: ";
-        const VOTES_STRING = "Votes: ";
         const MINUTES = " mins";
-        const BANNER = "images/banner.jpg";
+        const BANNER_NEWEST = "url('images/bannernewest.jpg')";
+        const BANNER_TOP = "url('images/bannerrated.jpg')";
+        const BANNER_POPULAR = "url('images/bannerpopular.jpg')";
 
         // The googleSheet link
         const GOOGLE_SHEET = "https://spreadsheets.google.com/feeds/list/156eQXgwJy0VvrwW6GH61fKfENcL3g4gRxlPaeLciy5Y/od6/public/values?alt=json";
@@ -167,6 +167,24 @@
         const modalActors = document.querySelector(".modal-actors");
         const modalDuration = document.querySelector(".modal-duration");
         const modalImdbUrl = document.querySelector(".imdb-link-btn");
+
+        // Run this function with 1 second delay 
+        // adds-removes the active class on the menu items
+        setTimeout(function runDelay() {
+            const items = menu.querySelectorAll("a");
+
+            // Initialize the active class on the newest menu item
+            items[0].classList.add("active");
+           
+            // Loop through the buttons and add the active class to the current/clicked button
+            for (let i = 0; i < items.length; i++) {
+                items[i].addEventListener("click", function () {
+                    let current = document.getElementsByClassName("active");
+                    current[0].className = current[0].className.replace("active", "");
+                    this.className += "active";
+                });
+            }
+        }, 1000);
 
         // Create the Loading Indicator 
         let loadingIndicator = "";
@@ -254,25 +272,14 @@
 
             // if rating is not empty or null, display it 
             if (rating) {
-                clone.querySelector(".rating").textContent = RATING_STRING + rating;
+                clone.querySelector(".rating").textContent = rating + RATING_STRING;
                 // function to set the rating
                 calculateRating(rating, clone.querySelectorAll("span"));
             }
 
-            // if votes are not null or empty, display them
-            if (votes) {
-                clone.querySelector(".votes").textContent = VOTES_STRING + votes;
-            }
-
             // if genre is not empty or null, display it
             if (genre) {
-                clone.querySelector(".genre").textContent = GENRE_STRING + genre;
-            }
-
-            // if description is not empty or null, display it
-            if (description) {
-                // let only 3 columns on the description (substring() function)
-                clone.querySelector(".description").textContent = description.substring(0, 102) + "...";
+                clone.querySelector(".genre").textContent = genre;
             }
 
             // if imdb video id is not empty or null, display the thumbnail
@@ -286,14 +293,8 @@
                 clone.querySelector(".card-img").src = thumbnail;
             }
 
-            // if year is not empty or null, display it
-            if (year) {
-                clone.querySelector(".year").textContent = RELEASE + year;
-            }
-
-
             // pass the data into the modal when clicked
-            clone.querySelector(".open-btn").addEventListener("click", function () {
+            clone.querySelector(".card").addEventListener("click", function () {
                 // function to set the modal - we don't have to fetch again 
                 // we are passing directly all the data
                 setupModal(title, rating, votes, description, genre, year, youtubeId, imdbUrl, actors, duration);
@@ -340,33 +341,33 @@
                     // display the video
                     let video = YOUTUBE_VIDEO + mYoutubeId;
                     modalVideo.src = video;
-                }                
-               
+                }
+
                 if (mRating) {
-                    modalRating.textContent = RATING_STRING + mRating;
+                    modalRating.textContent = mRating + RATING_STRING + " (" + mVotes + ")";
                     calculateRating(mRating, modalStars);
                 }
-               
+
                 if (mDescription) {
                     modalDescription.textContent = mDescription;
                 }
-                
+
                 if (mGenre) {
                     modalGenre.textContent = GENRE_STRING + mGenre;
                 }
-                
+
                 if (mYear) {
                     modalYear.textContent = RELEASE + mYear;
                 }
-                
+
                 if (mActors) {
                     modalActors.textContent = ACTORS + mActors;
                 }
-                
+
                 if (mDuration) {
                     modalDuration.textContent = DURATION + mDuration + MINUTES;
                 }
-               
+
                 if (mImdbUrl) {
                     // open the imdb url when clicked the imdb url button            
                     modalImdbUrl.addEventListener("click", openImdbUrl);
@@ -375,7 +376,7 @@
                 }
             }
         }
-        
+
         // function to open the url from IMDB
         function openImdbUrl(url) {
             // open the link in a new page 
@@ -408,10 +409,10 @@
         function sortByNewest(movies) {
 
             // Create Banner
-            createBanner("Find a Fresh Movie!");
+            createBanner("Newest Movies");
 
             // Create Title      
-            createTitle("newest-title");
+            // createTitle("newest-title");
 
             // sort by year
             movies.sort(function (a, b) {
@@ -428,10 +429,10 @@
         function sortByTopRated(movies) {
 
             // Create Banner
-            createBanner("Find an All-Star Movie!");
+            createBanner("Top-Rated Movies");
 
             // Create Title
-            createTitle("top-rated");
+            // createTitle("top-rated");
 
             // sort by top rated 
             movies.sort(function (a, b) {
@@ -448,10 +449,10 @@
         function sortByPopular(movies) {
 
             // Create Banner
-            createBanner("Find a Legendary Movie!");
+            createBanner("Popular Movies");
 
             // Create Title
-            createTitle("popular-title");
+            // createTitle("popular-title");
 
             // sort by most votes
             movies.sort(function (a, b) {
@@ -468,37 +469,27 @@
             movies.forEach(populateUI);
         }
 
-        // A function to create the title
-        // for each page (newest, top rated, popular)
-        function createTitle(title) {
-            // Create Title
-            let createTitle = document.createElement("h2");
-            createTitle.setAttribute("id", title);
-            // set the Main Title on the Home Page 
-            // using switch statement
-            switch (title) {
-                case "newest-title":
-                    createTitle.textContent = NEWEST;
-                    break;
-                case "top-rated":
-                    createTitle.textContent = TOP_RATED;
-                    break;
-                case "popular-title":
-                    createTitle.textContent = POPULAR;
-                    break;
-            }
-            // append the title on the main content
-            main.appendChild(createTitle);
-            // Get a Reference to the main title            
-            mainTitle = document.querySelector(`#${title}`); // ES6 String Interpolation with backticks `${variable}`
-        }
-
         // Function to create the banner
         function createBanner(title) {
             // create the banner as a background inside the paragraph
             let createBanner = document.createElement("p");
             createBanner.setAttribute("id", "banner");
-            createBanner.src = BANNER;
+
+            if (title === "Newest Movies") {
+                createBanner.src = BANNER_NEWEST;
+                createBanner.style.backgroundImage = BANNER_NEWEST;
+            }
+
+            if (title === "Top-Rated Movies") {
+                createBanner.src = BANNER_TOP;
+                createBanner.style.backgroundImage = BANNER_TOP;
+            }
+
+            if (title === "Popular Movies") {
+                createBanner.src = BANNER_POPULAR;
+                createBanner.style.backgroundImage = BANNER_POPULAR;
+            }
+
             main.appendChild(createBanner);
 
             // get a reference to the banner
@@ -507,7 +498,7 @@
             // Create the main title & append it inside the banner (paragraph)
             let h1 = document.createElement("h1");
             h1.setAttribute("id", "transparent-title");
-            h1.textContent = KEAFLEX_TITLE + title;
+            h1.textContent = title;
             banner.appendChild(h1);
 
         }
@@ -532,7 +523,6 @@
         function hideLoadingSetTitles() {
             // Hide the Loading Indicator
             loadingIndicator.style.display = "none";
-            mainTitle.style.display = "block";
         }
 
         // calculate the rating and set the stars
