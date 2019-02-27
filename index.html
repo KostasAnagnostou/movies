@@ -30,9 +30,11 @@
 
             <!-- The Navigation Bar / Menu -->
             <nav id="navbar" class="navbarbox">
-                <!-- Logo with a link to the Home Page -->
-                <a href="index.html"><img src="images/keaflex-logo.png" id="logo" class="centered"
-                        alt="The logo of Movies Website"></a>
+                <!-- Logo with a link to the Home Page / 3 parts -->
+                <a href="index.html"><img src="images/cerc3.png" id="logo" alt="The logo of Movies Website"></a>
+                <a href="index.html"><img src="images/linie.png" id="logo2" alt="The line"></a>
+                <a href="index.html"><img src="images/text.png" id="logo3" alt="The text"></a>
+
                 <div class="nav-wrapper">
                     <!-- Navbar Links -->
                     <ul id="menu">
@@ -71,17 +73,14 @@
         <article class="card">
             <img class="card-img" src="IMG" style="width:100%">
             <h1 class="title">MOVIE TITLE</h1>
+            <h4 class="year">YEAR</h4>
             <span class="fa fa-star fa-lg"></span>
             <span class="fa fa-star fa-lg"></span>
             <span class="fa fa-star fa-lg"></span>
             <span class="fa fa-star fa-lg"></span>
             <span class="fa fa-star fa-lg"></span>
-            <h4 class="rating">RATING</h4>
-            <!-- <h5 class="votes">VOTES</h5> -->
-            <!-- <p class="description">DESCRIPTION</p> -->
-            <h4 class="genre">GENRE</h4>
-            <!-- <h4 class="year">YEAR</h4>
-            <p><button class="open-btn">Read More</button></p> -->
+            <h4 class="rating">RATING</h4>           
+            <h4 class="genre">GENRE</h4>            
         </article>
     </template>
 
@@ -99,8 +98,8 @@
                 <span class="star fa fa-star fa-lg"></span>
                 <span class="star fa fa-star fa-lg"></span>
                 <span class="star fa fa-star fa-lg"></span>
-            </p>            
-            <p class="modal-rating"></p>           
+            </p>
+            <p class="modal-rating"></p>
             <p class="modal-description"></p>
             <p class="modal-actors"></p>
             <ul class="horizontal">
@@ -114,12 +113,14 @@
         </div>
     </article>
 
+    <!--Button-go to top-->
+    <button onclick="topFunction()" id="Btn-top" title="Go to top"><i class="fa fa-arrow-up fa-lg" aria-hidden="true"></i></button>
+
     <!-- The JS for the menu -->
     <script src="js/menu.js"></script>
 
     <script>
         // fetch data from a Google Sheets as JSON for a Movies Website
-        // Code by Konstantinos Anagnostou
 
         // Strings Constants
         const COPYRIGHT_STRING = "&copy; 2019 KEAFLEX - Group Project for KEA";
@@ -127,6 +128,7 @@
         const TOP_RATED = "Top Rated";
         const POPULAR = "Popular";
         const RELEASE = "Release Year: ";
+        const VOTES_STRING = " votes"; 
         const GENRE_STRING = "Genre: ";
         const RATING_STRING = " on IMDB";
         const LOADING_IMAGE = "images/loading.gif";
@@ -175,7 +177,7 @@
 
             // Initialize the active class on the newest menu item
             items[0].classList.add("active");
-           
+
             // Loop through the buttons and add the active class to the current/clicked button
             for (let i = 0; i < items.length; i++) {
                 items[i].addEventListener("click", function () {
@@ -277,6 +279,11 @@
                 calculateRating(rating, clone.querySelectorAll("span"));
             }
 
+            // if year is not empty or null, display it
+            if (year) {
+                clone.querySelector(".year").textContent = year;
+            }
+
             // if genre is not empty or null, display it
             if (genre) {
                 clone.querySelector(".genre").textContent = genre;
@@ -344,7 +351,7 @@
                 }
 
                 if (mRating) {
-                    modalRating.textContent = mRating + RATING_STRING + " (" + mVotes + ")";
+                    modalRating.textContent = mRating + RATING_STRING + " (" + mVotes + VOTES_STRING +")";
                     calculateRating(mRating, modalStars);
                 }
 
@@ -390,7 +397,9 @@
             let createItem = document.createElement("li");
             createItem.innerHTML = `<a href="#${menuItem}">${menuItem}</a>`;
             createItem.addEventListener("click", function () {
+                // Clear the page and fetch
                 clearBody();
+                clearModal();
                 createLoadingIndicator();
                 fetchAllMovies(GOOGLE_SHEET, sortBy);
             });
@@ -398,7 +407,9 @@
             // clone the menu item & add click event
             let mobileClone = createItem.cloneNode(true);
             mobileClone.addEventListener("click", function () {
+                // Clear the page and fetch
                 clearBody();
+                clearModal();
                 createLoadingIndicator();
                 fetchAllMovies(GOOGLE_SHEET, sortBy);
             });
@@ -410,9 +421,6 @@
 
             // Create Banner
             createBanner("Newest Movies");
-
-            // Create Title      
-            // createTitle("newest-title");
 
             // sort by year
             movies.sort(function (a, b) {
@@ -429,10 +437,7 @@
         function sortByTopRated(movies) {
 
             // Create Banner
-            createBanner("Top-Rated Movies");
-
-            // Create Title
-            // createTitle("top-rated");
+            createBanner("Top-Rated Movies");         
 
             // sort by top rated 
             movies.sort(function (a, b) {
@@ -450,10 +455,7 @@
 
             // Create Banner
             createBanner("Popular Movies");
-
-            // Create Title
-            // createTitle("popular-title");
-
+            
             // sort by most votes
             movies.sort(function (a, b) {
                 for (let i = 0; i < movies.length; i++) {
