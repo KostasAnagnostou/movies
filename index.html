@@ -173,19 +173,27 @@
         // Run this function with 1 second delay 
         // adds-removes the active class on the menu items
         setTimeout(function runDelay() {
-            const items = menu.querySelectorAll("a");
 
-            // Initialize the active class on the newest menu item
+            const items = menu.querySelectorAll("a");
+            const mobileItems = mobileMenu.querySelectorAll("a");
+           
+            // Initialize the active class on the first menu item
             items[0].classList.add("active");
 
             // Loop through the buttons and add the active class to the current/clicked button
             for (let i = 0; i < items.length; i++) {
+                // desktop menu
                 items[i].addEventListener("click", function () {
                     let current = document.getElementsByClassName("active");
                     current[0].className = current[0].className.replace("active", "");
                     this.className += "active";
-                });
-            }
+                });  // mobile menu
+                mobileItems[i].addEventListener("click", function () {
+                    let current = document.getElementsByClassName("active");
+                    current[0].className = current[0].className.replace("active", "");
+                    this.className += "active";
+                });                
+            }           
         }, 1000);
 
         // Create the Loading Indicator 
@@ -455,7 +463,7 @@
 
             // Create Banner
             createBanner("Popular Movies");
-            
+
             // sort by most votes
             movies.sort(function (a, b) {
                 for (let i = 0; i < movies.length; i++) {

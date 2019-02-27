@@ -215,13 +215,15 @@ section {
 	/* transition: width 0.8s cubic-bezier(0.22, 0.61, 0.36, 1); */
 }
 
-.overlay-menu li a:hover:before {
+.overlay-menu li a:hover:before,
+.overlay-menu li a.active:before {
 	background: var(--secondary-color);
 	width: 70%;
 	transition: width 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
-.overlay-menu li a:hover:after {
+.overlay-menu li a:hover:after,
+.overlay-menu li a.active:after {
 	background: transparent;
 	width: 100%;
 	/* transition: 0s; */
