@@ -8,7 +8,7 @@
 	--fonts-montserrat:'Montserrat', sans-serif;
 	--transparent-main-color: rgba(255, 255, 0, 0.94);
 }
-
+/* Overall layout*/
 html,
 body {
 	margin: 0px;
