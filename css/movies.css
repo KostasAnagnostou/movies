@@ -265,6 +265,8 @@ section {
             animation-iteration-count: infinite;
             animation-timing-function: linear;
 }
+
+/* Animation to make the logo rotate on mouse over*/
 @keyframes spin {
             from {
                 transform: rotate(0deg);
