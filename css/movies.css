@@ -25,9 +25,9 @@ body {
 
 h2 {
 	text-align:center;
-    padding:12px;
+    	padding:12px;
 	color:var(--secondary-color);
-    background-color:var(--main-color);
+    	background-color:var(--main-color);
 	display: none;
 	margin-top:8px;
 	margin-bottom:8px;
@@ -71,7 +71,7 @@ section {
 	z-index: 10;
 	font-weight: bold;
 	background-color: var(--main-color);
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 }
 
 .nav-wrapper {
@@ -233,9 +233,8 @@ section {
 /* The style for the Logo */
 
 #logo {
- 
-    margin-left: 120px;
-    margin-bottom:6px;
+ 	margin-left: 120px;
+    	margin-bottom:6px;
 	height: 43px;
 	float: left;
 	margin-top: 8px;
@@ -246,7 +245,7 @@ section {
 #logo2 {
 	height: 100px;
 	float: left;
-    margin-top: -50.2px;
+    	margin-top: -50.2px;
 	margin-left: -29.4px;
 	position: relative;
 	z-index: -1;
@@ -255,7 +254,7 @@ section {
 #logo3 {
 	height: 110px;
 	float: left;
-    margin-top: -57px;
+    	margin-top: -57px;
 	margin-left: -38.4px;
 	position: relative;
 	z-index: -1;
@@ -308,7 +307,7 @@ section {
 	max-width: 300px;
 	margin: auto;
 	text-align: center;
-    font-family: arial; 
+    	font-family: arial; 
 	background-color: var(--color-white);
 	cursor:pointer;
 }
@@ -420,10 +419,10 @@ section {
 }
 .imdb-link-btn {
 	display: block;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 12px;
-    width: 200px;
+    	margin-left: auto;
+    	margin-right: auto;
+    	padding: 12px;
+    	width: 200px;
 	cursor: pointer;
 	background-color: var(--main-color);
 	color: var(--secondary-color);
@@ -458,7 +457,7 @@ section {
 }
 
 .description {
-    text-align:left;
+    	text-align:left;
 	padding-left: 8px;
 	padding-right: 8px;
 }
@@ -470,7 +469,7 @@ ul.horizontal {
 	margin-left: auto;
 	margin-right: auto;
 	max-width: 800px;
-    word-break: keep-all;
+    	word-break: keep-all;
 } @media (max-width:900px) {
   ul.horizontal {	
     padding:0px;
@@ -481,8 +480,8 @@ ul.horizontal li {
 	display: inline;
 	padding-right: 18px;
 	color: var(--secondary-color);
-  font-weight: bold;
-  text-align:center;
+  	font-weight: bold;
+  	text-align:center;
 } @media (max-width:900px) {
   ul.horizontal li {
     display:block;    
@@ -516,8 +515,8 @@ ul.horizontal li {
 
 #loading,
 #loading-modal {
-    margin-top:100px;
-    width:200px;
+    	margin-top:100px;
+    	width:200px;
 	display: none;
 	margin-left: auto;
 	margin-right: auto;
@@ -533,7 +532,7 @@ ul.horizontal li {
     font-size: 14px;
     border: none;
     outline: none;
-   background-color: var(--main-color);
+    background-color: var(--main-color);
     color: var(--secondary-color);
     cursor: pointer;
     padding: 13px;
